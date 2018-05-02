@@ -1,0 +1,81 @@
+{% extends "layout.html" %}
+
+{% block body %}
+    <h1>Flow</h1>
+    <br>
+    <p>Please fill out the form</p>
+
+    <form action="/flow_create" method="post">
+        Flow Name
+        <br>
+        <input name="flowname" type="text" size="39" value=" ">
+        <br><br>
+        <div class="form-check">
+            <label class="form-check-label">Step Name</label>
+            <input class="stepname"name="stepname1" type="text" size="28" value=" ">
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="steptype1" value="fixed" checked>
+            <label class="form-check-label">
+                Fixed
+            </label><br>
+            <input class="form-check-input" type="radio" name="steptype1" value="percent">
+            <label class="form-check-label">
+                Pecent
+            </label>
+        </div>
+        <br>
+        <div class="form-check">
+            <label class="form-check-label">
+                Amount
+            </label>
+            <input class="amount" name="amount1" type="text" size="31" value=" ">
+        </div>
+        <br>
+            <div class="form-check">
+            <label class="form-check-label">Step Name</label>
+            <input class="stepname" name="stepname2" type="text" size="28" value=" ">
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="steptype2" value="fixed" checked>
+            <label class="form-check-label">
+                Fixed
+            </label><br>
+            <input class="form-check-input" type="radio" name="steptype2" value="percent">
+            <label class="form-check-label">
+                Pecent
+            </label>
+        </div>
+        <br>
+        <div class="form-check">
+            <label class="form-check-label">
+                Amount
+            </label>
+            <input class="amount" name="amount2" type="text" size="31" value=" ">
+        </div>
+        <br>
+        <div class="form-check">
+            <label class="form-check-label">Step Name</label>
+            <input class="stepname" name="stepname3" type="text" size="28" value=" ">
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="steptype3" value="fixed" checked>
+            <label class="form-check-label">
+                Fixed
+            </label><br>
+            <input class="form-check-input" type="radio" name="steptype3" value="percent">
+            <label class="form-check-label">
+                Pecent
+            </label>
+        </div>
+        <br>
+        <div class="form-check">
+            <label class="form-check-label">
+                Amount
+            </label>
+            <input class="amount" name="amount3" type="text" size="31" value=" ">
+        </div>
+        <br>
+        <button type="submit" class="btn btn-success">Create Flow</button>
+    </form>
+{% endblock %}
