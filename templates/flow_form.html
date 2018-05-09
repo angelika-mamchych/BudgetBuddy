@@ -1,81 +1,99 @@
 {% extends "layout.html" %}
 
 {% block body %}
-    <h1>Flow</h1>
+    <!--<h4>Flow</h4>-->
     <br>
-    <p>Please fill out the form</p>
-
-    <form action="/flow_create" method="post">
-        Flow Name
-        <br>
-        <input name="flowname" type="text" size="39" value=" ">
-        <br><br>
-        <div class="form-check">
-            <label class="form-check-label">Step Name</label>
-            <input class="stepname"name="stepname1" type="text" size="28" value=" ">
+    <i>Please fill out the form</i>
+    <ul><!--html list-->
+    {% for error in errors %}<!--перебираємо список-->
+        <li style="color:red">{{error}}</li><!--пункт списку-->
+    {% endfor %}
+    </ul>
+<form>
+    <fieldset>
+        <div class="form-row">
+            <div class="col-md-4 mb-3">
+                <label for="validationDefault">Flow name</label>
+                <input
+                        type="text"
+                        class="form-control"
+                        id="validationDefault"
+                        placeholder="Enter flow name"
+                        value=""
+                        required
+                >
+            </div>
         </div>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="steptype1" value="fixed" checked>
-            <label class="form-check-label">
-                Fixed
-            </label><br>
-            <input class="form-check-input" type="radio" name="steptype1" value="percent">
-            <label class="form-check-label">
-                Pecent
-            </label>
+        <div class="form-row">
+            <div class="col-md-3 mb-3">
+                <label for="validationDefault">Step name</label>
+                <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter step name"
+                        value=""
+                        required
+                >
+            </div>
         </div>
-        <br>
-        <div class="form-check">
-            <label class="form-check-label">
-                Amount
-            </label>
-            <input class="amount" name="amount1" type="text" size="31" value=" ">
+        <div class="custom-control custom-radio custom-control-inline">
+            <input type="radio" id="customRadioInline1" name="customRadioInline1" class="custom-control-input">
+            <label class="custom-control-label" for="customRadioInline1">Fixed</label>
         </div>
-        <br>
-            <div class="form-check">
-            <label class="form-check-label">Step Name</label>
-            <input class="stepname" name="stepname2" type="text" size="28" value=" ">
-        </div>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="steptype2" value="fixed" checked>
-            <label class="form-check-label">
-                Fixed
-            </label><br>
-            <input class="form-check-input" type="radio" name="steptype2" value="percent">
-            <label class="form-check-label">
-                Pecent
-            </label>
+        <div class="custom-control custom-radio custom-control-inline">
+            <input type="radio" id="customRadioInline2" name="customRadioInline1" class="custom-control-input">
+            <label class="custom-control-label" for="customRadioInline2">Percent</label>
         </div>
         <br>
-        <div class="form-check">
-            <label class="form-check-label">
-                Amount
-            </label>
-            <input class="amount" name="amount2" type="text" size="31" value=" ">
+        <div class="form-row">
+            <div class="col-md-3 mb-3">
+                <label for="validationDefault02">Amount</label>
+                <input
+                        type="number"
+                        class="form-control"
+                        id="validationDefault02"
+                        placeholder="Enter amount"
+                        value=""
+                        required
+                >
+            </div>
         </div>
-        <br>
-        <div class="form-check">
-            <label class="form-check-label">Step Name</label>
-            <input class="stepname" name="stepname3" type="text" size="28" value=" ">
+    </fieldset>
+    <div class="form-row">
+      <div class="col-md-3 mb-3">
+          <label for="validationDefault11">Step name</label>
+          <input
+                  type="text"
+                  class="form-control"
+                  id="validationDefault11"
+                  placeholder="Enter step name"
+                  value=""
+                  required
+          >
+      </div>
+    </div>
+    <div class="custom-control custom-radio custom-control-inline">
+        <input type="radio" id="customRadioInline11" name="customRadioInline2" class="custom-control-input">
+        <label class="custom-control-label" for="customRadioInline11">Fixed</label>
+    </div>
+    <div class="custom-control custom-radio custom-control-inline">
+        <input type="radio" id="customRadioInline22" name="customRadioInline2" class="custom-control-input">
+        <label class="custom-control-label" for="customRadioInline22">Percent</label>
+    </div>
+    <br>
+    <div class="form-row">
+        <div class="col-md-3 mb-3">
+            <label for="validationDefault22">Amount</label>
+            <input
+                    type="number"
+                    class="form-control"
+                    id="validationDefault22"
+                    placeholder="Enter amount"
+                    value=""
+                    required
+            >
         </div>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="steptype3" value="fixed" checked>
-            <label class="form-check-label">
-                Fixed
-            </label><br>
-            <input class="form-check-input" type="radio" name="steptype3" value="percent">
-            <label class="form-check-label">
-                Pecent
-            </label>
-        </div>
-        <br>
-        <div class="form-check">
-            <label class="form-check-label">
-                Amount
-            </label>
-            <input class="amount" name="amount3" type="text" size="31" value=" ">
-        </div>
-        <br>
-        <button type="submit" class="btn btn-success">Create Flow</button>
-    </form>
+    </div>
+    <button class="btn btn-primary" type="submit">Create Flow</button>
+</form>
 {% endblock %}
