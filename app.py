@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from flask import Flask, render_template, redirect, url_for
+from flask import Flask, request, render_template, redirect, url_for
 
-# from flask_mysqldb import MySQL
 from data import get_data
 
 app = Flask(__name__)
@@ -20,6 +19,17 @@ def flow_form():
 
 @app.route("/flow_create", methods=['GET', 'POST'])
 def flow_create():
+    flowname = request.form['flowname'].strip()
+    errors = []
+    if not flowname:
+        errors.append('Please put flowname')
+
+    amount = request.form["amount1"]
+    if not amount:
+        errors.append('Please put amount')
+
+    if errors:
+        return render_template("flow_form.html", errors=errors)
     # save to DB
     # validate etc
     return redirect(url_for('flow_item', flow_id=1))
