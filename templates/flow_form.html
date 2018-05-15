@@ -9,51 +9,55 @@
         <li style="color:red">{{error}}</li><!--пункт списку-->
     {% endfor %}
     </ul>
-<form>
+<form method="post" action="/flow_create">
     <fieldset>
         <div class="form-row">
             <div class="col-md-4 mb-3">
-                <label for="validationDefault">Flow name</label>
+                <label for="flowname">Flow name</label>
                 <input
                         type="text"
                         class="form-control"
-                        id="validationDefault"
+                        id="flowname"
                         placeholder="Enter flow name"
                         value=""
+                        name="flowname"
                         required
                 >
             </div>
         </div>
         <div class="form-row">
             <div class="col-md-3 mb-3">
-                <label for="validationDefault">Step name</label>
+                <label for="stepname1">Step name</label>
                 <input
                         type="text"
                         class="form-control"
                         placeholder="Enter step name"
+                        id="stepname1"
                         value=""
+                        name="stepname1"
                         required
                 >
             </div>
         </div>
         <div class="custom-control custom-radio custom-control-inline">
-            <input type="radio" id="customRadioInline1" name="customRadioInline1" class="custom-control-input">
-            <label class="custom-control-label" for="customRadioInline1">Fixed</label>
+            <input type="radio" id="steptype1" name="steptype1" class="custom-control-input">
+            <label class="custom-control-label" for="steptype1">Fixed</label>
         </div>
         <div class="custom-control custom-radio custom-control-inline">
-            <input type="radio" id="customRadioInline2" name="customRadioInline1" class="custom-control-input">
-            <label class="custom-control-label" for="customRadioInline2">Percent</label>
+            <input type="radio" id="steptype11" name="steptype1" class="custom-control-input">
+            <label class="custom-control-label" for="steptype11">Percent</label>
         </div>
         <br>
         <div class="form-row">
             <div class="col-md-3 mb-3">
-                <label for="validationDefault02">Amount</label>
+                <label for="amount1">Amount</label>
                 <input
                         type="number"
                         class="form-control"
-                        id="validationDefault02"
+                        id="amount1"
                         placeholder="Enter amount"
                         value=""
+                        name="amount1"
                         required
                 >
             </div>
@@ -61,39 +65,79 @@
     </fieldset>
     <div class="form-row">
       <div class="col-md-3 mb-3">
-          <label for="validationDefault11">Step name</label>
+          <label for="stepname2">Step name</label>
           <input
                   type="text"
                   class="form-control"
-                  id="validationDefault11"
+                  id="stepname2"
                   placeholder="Enter step name"
                   value=""
+                  name="stepname2"
                   required
           >
       </div>
     </div>
     <div class="custom-control custom-radio custom-control-inline">
-        <input type="radio" id="customRadioInline11" name="customRadioInline2" class="custom-control-input">
-        <label class="custom-control-label" for="customRadioInline11">Fixed</label>
+        <input type="radio" id="steptype2" name="steptype2" class="custom-control-input">
+        <label class="custom-control-label" for="steptype2">Fixed</label>
     </div>
     <div class="custom-control custom-radio custom-control-inline">
-        <input type="radio" id="customRadioInline22" name="customRadioInline2" class="custom-control-input">
-        <label class="custom-control-label" for="customRadioInline22">Percent</label>
+        <input type="radio" id="steptype22" name="steptype2" class="custom-control-input">
+        <label class="custom-control-label" for="steptype22">Percent</label>
     </div>
     <br>
     <div class="form-row">
         <div class="col-md-3 mb-3">
-            <label for="validationDefault22">Amount</label>
+            <label for="amount2">Amount</label>
             <input
                     type="number"
                     class="form-control"
-                    id="validationDefault22"
+                    id="amount2"
                     placeholder="Enter amount"
                     value=""
+                    name="amount2"
                     required
             >
         </div>
     </div>
+    <div class="form-row">
+      <div class="col-md-3 mb-3">
+          <label for="stepname3">Step name</label>
+          <input
+                  type="text"
+                  class="form-control"
+                  id="stepname3"
+                  placeholder="Enter step name"
+                  value=""
+                  name="stepname3"
+                  required
+          >
+      </div>
+    </div>
+    <div class="custom-control custom-radio custom-control-inline">
+        <input type="radio" id="steptype3" name="steptype3" class="custom-control-input">
+        <label class="custom-control-label" for="steptype3">Fixed</label>
+    </div>
+    <div class="custom-control custom-radio custom-control-inline">
+        <input type="radio" id="steptype33" name="steptype3" class="custom-control-input">
+        <label class="custom-control-label" for="steptype33">Percent</label>
+    </div>
+    <br>
+    <div class="form-row">
+        <div class="col-md-3 mb-3">
+            <label for="amount3">Amount</label>
+            <input
+                    type="number"
+                    class="form-control"
+                    id="amount3"
+                    placeholder="Enter amount"
+                    value=""
+                    name="amount3"
+                    required
+            >
+        </div>
+    </div>
+
     <button class="btn btn-primary" type="submit">Create Flow</button>
 </form>
 {% endblock %}
