@@ -14,7 +14,7 @@ def get_data():
         },
         {
             "flowname": "UpWork2",
-            "stepname1": "payoneer",
+            "stepname1": "Payoneer",
             "steptype1": "Fixed",
             "amount1": 30,
             "stepname2": 'Conversion fee',
