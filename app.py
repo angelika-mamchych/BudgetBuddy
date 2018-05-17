@@ -20,7 +20,7 @@ def form():
     return render_template("home.html")
 
 
-@app.route("/flow")
+@app.route("/new_flow")
 def flow_form():
     return render_template("flow_form.html")
 
@@ -53,16 +53,24 @@ def flow_create():
     cur.execute('INSERT INTO results values(NULL, "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}")'.format(
         flowname, stepname1, stepname2,  stepname3, steptype1, steptype2, steptype3, amount1, amount2, amount3))
     mysql.connection.commit()
-    return redirect(url_for('flow_item', flow_id=cur.lastrowid - 1))
+    return redirect(url_for('flow_item', flow_id=cur.lastrowid))
 
 
-@app.route("/flow/<int:flow_id>")
+@app.route("/flows/<int:flow_id>")
 def flow_item(flow_id):
     # get from DB by flow_id
     cur = mysql.connection.cursor()
+    cur.execute('SELECT * FROM results where id={}'.format(flow_id))
+    flow = cur.fetchone()
+    return render_template("flow_item.html", flow=flow)
+
+
+@app.route("/flows")
+def show_flows():
+    cur = mysql.connection.cursor()
     cur.execute('SELECT * FROM results')
-    rv = cur.fetchall()
-    return render_template("flow_item.html", flow=rv[flow_id])
+    flows = cur.fetchall()
+    return render_template("show_flows.html", flows=flows)
 
 
 if __name__ == "__main__":

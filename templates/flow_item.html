@@ -1,6 +1,16 @@
 {% extends "layout.html" %}
 
 {% block body %}
-<div>Hi man this is {{ flow.flowname }}</div>
-<div>{{ flow.stepname1 }}</div>
+<br>
+<i>{{ flow.flowname }}</i>
+<div>Stepname {{ flow.stepname1 }}</div>
+<div>{{ flow.steptype1 }}</div>
+<div>Amount {{ flow.amount1 }}</div>
+<div>Stepname{{ flow.stepname2 }}</div>
+<div>{{ flow.steptype2 }}</div>
+<div>Amount{{ flow.amount2 }}</div>
+<div>Stepname{{ flow.stepname3 }}</div>
+<div>{{ flow.steptype3 }}</div>
+<div>Amount {{ flow.amount3 }}</div>
+
 {% endblock %}
