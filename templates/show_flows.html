@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<ul>
+    {% for flow in flows %}
+    <li><a href="/flows/{{ flow.id }}">{{ flow.flowname }}</a></li>
+    {% endfor %}
+</ul>
+{% endblock%}
