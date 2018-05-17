@@ -41,9 +41,11 @@ def flow_create():
     errors = []
     if not flowname:
         errors.append('Please put flowname')
-        amount = request.form["amount1"]
+
+    amount = request.form["amount1"]
     if not amount:
         errors.append('Please put amount')
+
     if errors:
         return render_template("flow_form.html", errors=errors)
 
