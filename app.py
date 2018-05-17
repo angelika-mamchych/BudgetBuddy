@@ -38,14 +38,14 @@ def flow_create():
     amount2 = request.form['amount2'].strip()
     amount3 = request.form['amount3'].strip()
 
-    #errors = []
-    #if not flowname:
-     #   errors.append('Please put flowname')
-    #amount = request.form["amount1"]
-    #if not amount:
-      #  errors.append('Please put amount')
-    #if errors:
-       # return render_template("flow_form.html", errors=errors)
+    errors = []
+    if not flowname:
+        errors.append('Please put flowname')
+        amount = request.form["amount1"]
+    if not amount:
+        errors.append('Please put amount')
+    if errors:
+        return render_template("flow_form.html", errors=errors)
 
     cur = mysql.connection.cursor()
     cur.execute('INSERT INTO results values(NULL, "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}")'.format(
