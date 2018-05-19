@@ -25,7 +25,7 @@ def flow_form():
     return render_template("flow_form.html")
 
 
-@app.route("/flow_create", methods=['GET', 'POST'])
+@app.route("/flow_create", methods=['POST'])
 def flow_create():
     flowname = request.form['flowname'].strip()
     stepname1 = request.form['stepname1'].strip()
@@ -56,13 +56,39 @@ def flow_create():
     return redirect(url_for('flow_item', flow_id=cur.lastrowid))
 
 
-@app.route("/flows/<int:flow_id>")
+@app.route("/flows/<int:flow_id>", methods=['GET'])
 def flow_item(flow_id):
     # get from DB by flow_id
     cur = mysql.connection.cursor()
     cur.execute('SELECT * FROM results where id={}'.format(flow_id))
     flow = cur.fetchone()
     return render_template("flow_item.html", flow=flow)
+
+
+@app.route("/flows/<int:flow_id>", methods=['POST'])
+def flow_item_result(flow_id):
+    # get from DB by flow_id
+    cur = mysql.connection.cursor()
+    cur.execute('SELECT * FROM results where id={}'.format(flow_id))
+    flow = cur.fetchone()
+    total_amount = float(request.form['totalamount'].strip())
+    if flow['steptype1'] == 'percent':
+        step1_fee = total_amount * flow['amount1'] / 100
+        total_amount -= step1_fee
+    else:
+        total_amount = total_amount - flow['amount1']
+    if flow['steptype2'] == 'percent':
+        step2_fee = total_amount * flow['amount2'] / 100
+        total_amount -= step2_fee
+    else:
+        total_amount -= flow['amount2']
+    if flow['steptype3'] == 'percent':
+        step3_fee = total_amount * flow['amount3'] / 100
+        total_amount -= step3_fee
+    else:
+        total_amount -= flow['amount3']
+
+    return render_template("flow_item.html", flow=flow, total_left=round(total_amount, 2))
 
 
 @app.route("/flows")
@@ -75,3 +101,4 @@ def show_flows():
 
 if __name__ == "__main__":
     app.run()
+
