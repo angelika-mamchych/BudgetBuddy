@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from typing import Any, Union
 
 from flask import Flask, request, render_template, redirect, url_for
 from flask_mysqldb import MySQL
@@ -72,23 +73,35 @@ def flow_item_result(flow_id):
     cur.execute('SELECT * FROM results where id={}'.format(flow_id))
     flow = cur.fetchone()
     total_amount = float(request.form['totalamount'].strip())
-    if flow['steptype1'] == 'percent':
+    if flow['steptype1'].lower() == 'percent':
         step1_fee = total_amount * flow['amount1'] / 100
         total_amount -= step1_fee
     else:
-        total_amount = total_amount - flow['amount1']
+        step1_fee = flow['amount1']
+        total_amount -= flow['amount1']
+
     if flow['steptype2'] == 'percent':
         step2_fee = total_amount * flow['amount2'] / 100
         total_amount -= step2_fee
     else:
+        step2_fee = flow['amount2']
         total_amount -= flow['amount2']
+
     if flow['steptype3'] == 'percent':
         step3_fee = total_amount * flow['amount3'] / 100
         total_amount -= step3_fee
     else:
+        step3_fee = flow['amount3']
         total_amount -= flow['amount3']
 
-    return render_template("flow_item.html", flow=flow, total_left=round(total_amount, 2))
+    return render_template(
+        "flow_item.html",
+        flow=flow,
+        step1_fee=round(step1_fee, 2),
+        step2_fee=round(step2_fee, 2),
+        step3_fee=round(step3_fee, 2),
+        total_left=round(total_amount, 2)
+    )
 
 
 @app.route("/flows")
