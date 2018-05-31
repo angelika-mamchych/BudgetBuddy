@@ -112,6 +112,63 @@ def show_flows():
     return render_template("show_flows.html", flows=flows)
 
 
+@app.route("/flows_compare", methods=['GET'])
+def flows_compare():
+    ids = request.args.getlist('ids')
+    cur = mysql.connection.cursor()
+    cur.execute('SELECT * FROM results where id IN ({})'.format(", ".join(ids)))
+    flows = cur.fetchall()
+    return render_template("flows_compare.html", flows=flows)
+
+
+@app.route("/flows_compare", methods=['POST'])
+def flow_compare_result():
+    ids = request.args.getlist('ids')
+    cur = mysql.connection.cursor()
+    cur.execute('SELECT * FROM results where id IN ({})'.format(", ".join(ids)))
+    flows = cur.fetchall()
+    total_amount = float(request.form['totalamount'].strip())
+    total_lefts = []
+    step_one_fees = []
+    step_two_fees = []
+    step_three_fees = []
+    for flow in flows:
+        fee = 0
+        if flow['steptype1'].lower() == 'percent':
+            step1_fee = total_amount * flow['amount1'] / 100
+            fee += step1_fee
+        else:
+            step1_fee = flow['amount1']
+            fee += flow['amount1']
+
+        if flow['steptype2'] == 'percent':
+            step2_fee = (total_amount - fee) * flow['amount2'] / 100
+            fee += step2_fee
+        else:
+            step2_fee = flow['amount2']
+            fee += flow['amount2']
+
+        if flow['steptype3'] == 'percent':
+            step3_fee = (total_amount - fee) * flow['amount3'] / 100
+            fee += step3_fee
+        else:
+            step3_fee = flow['amount3']
+            fee += flow['amount3']
+        total_left = total_amount - fee
+        total_lefts.append(round(total_left, 2))
+        step_one_fees.append(round(step1_fee, 2))
+        step_two_fees.append(round(step2_fee, 2))
+        step_three_fees.append(round(step3_fee, 2))
+    return render_template(
+        "flows_compare.html",
+        flows=flows,
+        step_one_fees=step_one_fees,
+        step_two_fees=step_two_fees,
+        step_three_fees=step_three_fees,
+        total_lefts=total_lefts
+    )
+
+
 if __name__ == "__main__":
     app.run()
 
