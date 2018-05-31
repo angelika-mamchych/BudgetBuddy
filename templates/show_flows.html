@@ -1,9 +1,18 @@
 {% extends "layout.html" %}
 
 {% block body %}
+<form method="GET" action="/flows_compare" class="form-inline">
 <ul>
     {% for flow in flows %}
-    <li><a href="/flows/{{ flow.id }}">{{ flow.flowname }}</a></li>
+        <li>
+            <a href="/flows/{{ flow.id }}">{{ flow.flowname }}</a>
+            <input type="checkbox" class="form-check-input" name="ids" value="{{ flow.id }}">
+        </li>
     {% endfor %}
+    <button class="btn btn-primary" type="submit">Compare</button>
 </ul>
+</form>
+
+
+
 {% endblock%}

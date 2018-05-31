@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+
+{% block body %}
+{% for flow in flows %}
+    <div style="float: left">
+        <br>
+        <i>{{ flow.flowname }}</i>
+        <div>Stepname: {{ flow.stepname1 }}</div>
+        <div>{{ flow.steptype1 }}</div>
+        <div>Amount: {{ flow.amount1 }}</div>
+        {% if step_one_fees %}
+        <div><b>Step 1 fee:{{ step_one_fees[loop.index0] }}</b></div>
+        {% endif %}
+        <br>
+        <div>Stepname: {{ flow.stepname2 }}</div>
+        <div>{{ flow.steptype2 }}</div>
+        <div>Amount: {{ flow.amount2 }}</div>
+        {% if step_two_fees %}
+        <div><b>Step 2 fee:{{ step_two_fees[loop.index0] }}</b></div>
+        {% endif %}
+        <br>
+        <div>Stepname: {{ flow.stepname3 }}</div>
+        <div>{{ flow.steptype3 }}</div>
+        <div>Amount: {{ flow.amount3 }}</div>
+        {% if step_three_fees %}
+        <div><b>Step 3 fee:{{ step_three_fees[loop.index0] }}</b></div><br>
+        {% endif %}
+        {% if total_lefts %}
+        <div><b>Total left:{{ total_lefts[loop.index0] }}</b></div><br>
+        {% endif %}
+    </div>
+{% endfor %}
+<br>
+{% if total_left %}
+ hi your fee is {{ total_left }}
+{% endif %}
+<form class="form-inline" method="post">
+
+    <div class="form-row">
+        <div class="col-sm-5">
+            <input
+                type="text"
+                class="form-control"
+                id="totalamount"
+                placeholder="Enter total amount"
+                value=""
+                name="totalamount"
+                required
+            >
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary mb-10">Calculate</button>
+</form>
+{% endblock %}
