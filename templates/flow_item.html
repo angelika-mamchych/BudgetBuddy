@@ -37,6 +37,10 @@
         </div>
     </div>
     <button type="submit" class="btn btn-primary mb-10">Calculate</button>
-</form>
+</form><br>
 
+<form class="form-inline" method="post" action="/delete_flow/{{ flow.id }}">
+    <button type="submit" class="btn btn-danger mb-10">Delete</button>
+    <a class="btn btn-warning" href="/edit_flow/{{ flow.id }}" role="button">Edit</a>
+</form>
 {% endblock %}

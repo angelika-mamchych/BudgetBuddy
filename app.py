@@ -169,6 +169,42 @@ def flow_compare_result():
     )
 
 
+@app.route('/edit_flow/<int:flow_id>', methods=['GET', 'POST'])
+def edit_flow(flow_id):
+    cur = mysql.connection.cursor()
+    cur.execute('SELECT * FROM results where id={}'.format(flow_id))
+    flow = cur.fetchone()
+    if request.method == 'POST':
+        flowname = request.form['flowname'].strip()
+        stepname1 = request.form['stepname1'].strip()
+        stepname2 = request.form['stepname2'].strip()
+        stepname3 = request.form['stepname3'].strip()
+        steptype1 = request.form['steptype1'].strip()
+        steptype2 = request.form['steptype2'].strip()
+        steptype3 = request.form['steptype3'].strip()
+        amount1 = request.form['amount1'].strip()
+        amount2 = request.form['amount2'].strip()
+        amount3 = request.form['amount3'].strip()
+        cur.execute(
+            'UPDATE results SET flowname="{}", stepname1="{}", stepname2="{}", stepname3="{}", steptype1="{}", \
+            steptype2="{}", steptype3="{}", amount1="{}", amount2="{}", amount3="{}" WHERE id={}'.format(
+                flowname, stepname1, stepname2, stepname3, steptype1, steptype2, steptype3, amount1, amount2, amount3,
+                flow_id))
+        mysql.connection.commit()
+        return redirect(url_for("flow_item", flow_id=flow_id))
+    else:
+        return render_template('edit_flow_form.html', flow=flow)
+
+
+@app.route('/delete_flow/<int:flow_id>', methods=['POST'])
+def delete_flow(flow_id):
+    cur = mysql.connection.cursor()
+    cur.execute("DELETE FROM results WHERE id={}".format(flow_id))
+    mysql.connection.commit()
+    cur.close()
+    return redirect(url_for('show_flows'))
+
+
 if __name__ == "__main__":
     app.run()
 
