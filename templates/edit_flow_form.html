@@ -1,41 +1,18 @@
 {% extends "layout.html" %}
 
 {% block body %}
-    <!--<h4>Flow</h4>-->
-    <br>
-    <ul><!--html list-->
-    {% for error in errors %}<!--перебираємо список-->
-        <li style="color:red">{{error}}</li><!--пункт списку-->
-    {% endfor %}
-    </ul>
 <form method="post" action="/edit_flow/{{ flow.id }}">
     <fieldset>
         <div class="form-row">
             <div class="col-md-4 mb-3">
-                <label for="flowname">Flow name</label>
-                <input
-                        type="text"
-                        class="form-control"
-                        id="flowname"
-                        placeholder="Enter flow name"
-                        value="{{flow.flowname}}"
-                        name="flowname"
-                        required
-                >
+                {{ form.flowname.label }}
+                {{ form.flowname(class="form-control", required=true) }}
             </div>
         </div>
         <div class="form-row">
             <div class="col-md-3 mb-3">
-                <label for="stepname1">Step name</label>
-                <input
-                        type="text"
-                        class="form-control"
-                        placeholder="Enter step name"
-                        id="stepname1"
-                        value="{{flow.stepname1}}"
-                        name="stepname1"
-                        required
-                >
+                {{ form.stepname1.label }}
+                {{ form.stepname1(class="form-control", required=true) }}
             </div>
         </div>
         <div class="custom-control custom-radio custom-control-inline">
@@ -51,31 +28,15 @@
         <br>
         <div class="form-row">
             <div class="col-md-3 mb-3">
-                <label for="amount1">Amount</label>
-                <input
-                        type="number"
-                        class="form-control"
-                        id="amount1"
-                        placeholder="Enter amount"
-                        value="{{flow.amount1}}"
-                        name="amount1"
-                        required
-                >
+                {{ form.amount1.label }}
+                {{ form.amount1(class="form-control", required=true) }}
             </div>
         </div>
     </fieldset>
     <div class="form-row">
       <div class="col-md-3 mb-3">
-          <label for="stepname2">Step name</label>
-          <input
-                  type="text"
-                  class="form-control"
-                  id="stepname2"
-                  placeholder="Enter step name"
-                  value="{{flow.stepname2}}"
-                  name="stepname2"
-                  required
-          >
+          {{ form.stepname2.label }}
+          {{ form.stepname2(class="form-control", required=true) }}
       </div>
     </div>
     <div class="custom-control custom-radio custom-control-inline">
@@ -91,30 +52,14 @@
     <br>
     <div class="form-row">
         <div class="col-md-3 mb-3">
-            <label for="amount2">Amount</label>
-            <input
-                    type="number"
-                    class="form-control"
-                    id="amount2"
-                    placeholder="Enter amount"
-                    value="{{flow.amount2}}"
-                    name="amount2"
-                    required
-            >
+            {{ form.amount2.label }}
+            {{ form.amount2(class="form-control", required=true) }}
         </div>
     </div>
     <div class="form-row">
       <div class="col-md-3 mb-3">
-          <label for="stepname3">Step name</label>
-          <input
-                  type="text"
-                  class="form-control"
-                  id="stepname3"
-                  placeholder="Enter step name"
-                  value="{{flow.stepname3}}"
-                  name="stepname3"
-                  required
-          >
+          {{ form.stepname3.label }}
+          {{ form.stepname3(class="form-control", required=true) }}
       </div>
     </div>
     <div class="custom-control custom-radio custom-control-inline">
@@ -130,16 +75,8 @@
     <br>
     <div class="form-row">
         <div class="col-md-3 mb-3">
-            <label for="amount3">Amount</label>
-            <input
-                    type="number"
-                    class="form-control"
-                    id="amount3"
-                    placeholder="Enter amount"
-                    value="{{flow.amount3}}"
-                    name="amount3"
-                    required
-            >
+            {{ form.amount3.label }}
+            {{ form.amount3(class="form-control", required=true) }}
         </div>
     </div>
 
