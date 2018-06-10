@@ -22,34 +22,30 @@ def form():
     return render_template("home.html")
 
 
-@app.route("/new_flow")
+@app.route("/new_flow", methods=['GET'])
 def flow_form():
-    return render_template("flow_form.html")
+    form = FlowForm()
+
+    return render_template("flow_form.html", form=form, buttontext='Create Flow')
 
 
-@app.route("/flow_create", methods=['POST'])
+@app.route("/new_flow", methods=['POST'])
 def flow_create():
-    flowname = request.form['flowname'].strip()
-    stepname1 = request.form['stepname1'].strip()
-    stepname2 = request.form['stepname2'].strip()
-    stepname3 = request.form['stepname3'].strip()
-    steptype1 = request.form['steptype1'].strip()
-    steptype2 = request.form['steptype2'].strip()
-    steptype3 = request.form['steptype3'].strip()
-    amount1 = request.form['amount1'].strip()
-    amount2 = request.form['amount2'].strip()
-    amount3 = request.form['amount3'].strip()
+    form = FlowForm(request.form)
 
-    errors = []
-    if not flowname:
-        errors.append('Please put flowname')
+    if not form.validate():
+        return render_template("flow_form.html", form=form, buttontext='Create Flow')
 
-    amount = request.form["amount1"]
-    if not amount:
-        errors.append('Please put amount')
-
-    if errors:
-        return render_template("flow_form.html", errors=errors)
+    flowname = form.flowname.data.strip()
+    stepname1 = form.stepname1.data.strip()
+    stepname2 = form.stepname2.data.strip()
+    stepname3 = form.stepname3.data.strip()
+    steptype1 = form.steptype1.data.strip()
+    steptype2 = form.steptype2.data.strip()
+    steptype3 = form.steptype3.data.strip()
+    amount1 = form.amount1.data
+    amount2 = form.amount2.data
+    amount3 = form.amount3.data
 
     cur = mysql.connection.cursor()
     cur.execute('INSERT INTO results values(NULL, "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}")'.format(
@@ -202,7 +198,7 @@ def edit_flow(flow_id):
         mysql.connection.commit()
         return redirect(url_for("flow_item", flow_id=flow_id))
     else:
-        return render_template('edit_flow_form.html', form=form)
+        return render_template('flow_form.html', form=form, buttontext="Edit Flow")
 
 
 @app.route('/delete_flow/<int:flow_id>', methods=['POST'])

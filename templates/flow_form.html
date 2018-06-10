@@ -1,142 +1,81 @@
 {% extends "layout.html" %}
 
-{% block body
-    <br>
-    <i>Please fill out the form</i>
-    <ul><!--html list-->
-    {% for error in errors %}<!--перебираємо список-->
-        <li style="color:red">{{error}}</li><!--пункт списку-->
+{% block body %}
+
+{% if form.errors %}
+    {% for error in form.errors %}
+        <div>{{ error }}</div>
     {% endfor %}
-    </ul>
-<form method="post" action="/flow_create">
+{% endif %}
+<form method="post">
     <fieldset>
         <div class="form-row">
             <div class="col-md-4 mb-3">
-                <label for="flowname">Flow name</label>
-                <input
-                        type="text"
-                        class="form-control"
-                        id="flowname"
-                        placeholder="Enter flow name"
-                        value=""
-                        name="flowname"
-                        required
-                >
+                {{ form.flowname.label }}
+                {{ form.flowname(class="form-control", required=true) }}
             </div>
         </div>
         <div class="form-row">
             <div class="col-md-3 mb-3">
-                <label for="stepname1">Step name</label>
-                <input
-                        type="text"
-                        class="form-control"
-                        placeholder="Enter step name"
-                        id="stepname1"
-                        value=""
-                        name="stepname1"
-                        required
-                >
+                {{ form.stepname1.label }}
+                {{ form.stepname1(class="form-control", required=true) }}
             </div>
         </div>
-        <div class="custom-control custom-radio custom-control-inline">
-            <input type="radio" id="steptype1" name="steptype1" value="fixed" class="custom-control-input">
-            <label class="custom-control-label" for="steptype1">Fixed</label>
-        </div>
-        <div class="custom-control custom-radio custom-control-inline">
-            <input type="radio" id="steptype11" name="steptype1" value="percent" class="custom-control-input">
-            <label class="custom-control-label" for="steptype11">Percent</label>
-        </div>
+
+        {% for option in form.steptype1 %}
+            <div class="custom-control custom-radio custom-control-inline">
+                {{ option(class="custom-control-input") }}
+                {{ option.label(class="custom-control-label") }}
+            </div>
+        {% endfor %}
+
         <br>
         <div class="form-row">
             <div class="col-md-3 mb-3">
-                <label for="amount1">Amount</label>
-                <input
-                        type="number"
-                        class="form-control"
-                        id="amount1"
-                        placeholder="Enter amount"
-                        value=""
-                        name="amount1"
-                        required
-                >
+                {{ form.amount1.label }}
+                {{ form.amount1(class="form-control", required=true) }}
             </div>
         </div>
     </fieldset>
     <div class="form-row">
       <div class="col-md-3 mb-3">
-          <label for="stepname2">Step name</label>
-          <input
-                  type="text"
-                  class="form-control"
-                  id="stepname2"
-                  placeholder="Enter step name"
-                  value=""
-                  name="stepname2"
-                  required
-          >
+          {{ form.stepname2.label }}
+          {{ form.stepname2(class="form-control", required=true) }}
       </div>
     </div>
-    <div class="custom-control custom-radio custom-control-inline">
-        <input type="radio" id="steptype2" name="steptype2" value="fixed" class="custom-control-input">
-        <label class="custom-control-label" for="steptype2">Fixed</label>
-    </div>
-    <div class="custom-control custom-radio custom-control-inline">
-        <input type="radio" id="steptype22" name="steptype2" value="percent" class="custom-control-input">
-        <label class="custom-control-label" for="steptype22">Percent</label>
-    </div>
+    {% for option in form.steptype2 %}
+        <div class="custom-control custom-radio custom-control-inline">
+            {{ option(class="custom-control-input") }}
+            {{ option.label(class="custom-control-label") }}
+        </div>
+    {% endfor %}
     <br>
     <div class="form-row">
         <div class="col-md-3 mb-3">
-            <label for="amount2">Amount</label>
-            <input
-                    type="number"
-                    class="form-control"
-                    id="amount2"
-                    placeholder="Enter amount"
-                    value=""
-                    name="amount2"
-                    required
-            >
+            {{ form.amount2.label }}
+            {{ form.amount2(class="form-control", required=true) }}
         </div>
     </div>
     <div class="form-row">
       <div class="col-md-3 mb-3">
-          <label for="stepname3">Step name</label>
-          <input
-                  type="text"
-                  class="form-control"
-                  id="stepname3"
-                  placeholder="Enter step name"
-                  value=""
-                  name="stepname3"
-                  required
-          >
+          {{ form.stepname3.label }}
+          {{ form.stepname3(class="form-control", required=true) }}
       </div>
     </div>
-    <div class="custom-control custom-radio custom-control-inline">
-        <input type="radio" id="steptype3" name="steptype3" value="fixed" class="custom-control-input">
-        <label class="custom-control-label" for="steptype3">Fixed</label>
-    </div>
-    <div class="custom-control custom-radio custom-control-inline">
-        <input type="radio" id="steptype33" name="steptype3" value="percent" class="custom-control-input">
-        <label class="custom-control-label" for="steptype33">Percent</label>
-    </div>
+    {% for option in form.steptype3 %}
+        <div class="custom-control custom-radio custom-control-inline">
+            {{ option(class="custom-control-input") }}
+            {{ option.label(class="custom-control-label") }}
+        </div>
+    {% endfor %}
     <br>
     <div class="form-row">
         <div class="col-md-3 mb-3">
-            <label for="amount3">Amount</label>
-            <input
-                    type="number"
-                    class="form-control"
-                    id="amount3"
-                    placeholder="Enter amount"
-                    value=""
-                    name="amount3"
-                    required
-            >
+            {{ form.amount3.label }}
+            {{ form.amount3(class="form-control", required=true) }}
         </div>
     </div>
 
-    <button class="btn btn-primary" type="submit">Create Flow</button>
+    <button class="btn btn-success" type="submit">{{ buttontext }}</button>
 </form>
 {% endblock %}
