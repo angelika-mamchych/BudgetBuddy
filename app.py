@@ -74,6 +74,7 @@ def flow_item_result(flow_id):
     cur.execute('SELECT * FROM results where id={}'.format(flow_id))
     flow = cur.fetchone()
     total_amount = float(request.form['totalamount'].strip())
+
     if flow['steptype1'].lower() == 'percent':
         step1_fee = total_amount * flow['amount1'] / 100
         total_amount -= step1_fee
@@ -189,9 +190,9 @@ def edit_flow(flow_id):
         steptype1 = form.steptype1.data.strip()
         steptype2 = form.steptype2.data.strip()
         steptype3 = form.steptype3.data.strip()
-        amount1 = form.amount1.data.strip()
-        amount2 = form.amount2.data.strip()
-        amount3 = form.amount3.data.strip()
+        amount1 = form.amount1.data
+        amount2 = form.amount2.data
+        amount3 = form.amount3.data
 
         cur.execute(
             'UPDATE results SET flowname="{}", stepname1="{}", stepname2="{}", stepname3="{}", steptype1="{}", \
@@ -201,7 +202,7 @@ def edit_flow(flow_id):
         mysql.connection.commit()
         return redirect(url_for("flow_item", flow_id=flow_id))
     else:
-        return render_template('edit_flow_form.html', flow=flow, form=form)
+        return render_template('edit_flow_form.html', form=form)
 
 
 @app.route('/delete_flow/<int:flow_id>', methods=['POST'])
