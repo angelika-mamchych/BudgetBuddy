@@ -4,6 +4,7 @@ from flask import Flask, request, render_template, redirect, url_for
 from flask_mysqldb import MySQL
 from forms import FlowForm
 from helpers import dict2obj
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
@@ -12,10 +13,15 @@ app.config.update(dict(
     MYSQL_PASSWORD="mysql2Lika",
     MYSQL_DB="budgetbuddy",
     MYSQL_CURSORCLASS="DictCursor",
+    SQLALCHEMY_DATABASE_URI='mysql://root:mysql2Lika@localhost/budgetbuddy',
+    SQLALCHEMY_TRACK_MODIFICATIONS=False,
     DEBUG=True,
 ))
 
 mysql = MySQL(app)
+db = SQLAlchemy(app)
+
+from models import *
 
 @app.route("/")
 def form():
@@ -36,22 +42,23 @@ def flow_create():
     if not form.validate():
         return render_template("flow_form.html", form=form, buttontext='Create Flow')
 
-    flowname = form.flowname.data.strip()
-    stepname1 = form.stepname1.data.strip()
-    stepname2 = form.stepname2.data.strip()
-    stepname3 = form.stepname3.data.strip()
-    steptype1 = form.steptype1.data.strip()
-    steptype2 = form.steptype2.data.strip()
-    steptype3 = form.steptype3.data.strip()
-    amount1 = form.amount1.data
-    amount2 = form.amount2.data
-    amount3 = form.amount3.data
+    flow = Flow(
+        flowname=form.flowname.data.strip(),
+        stepname1=form.stepname1.data.strip(),
+        stepname2=form.stepname2.data.strip(),
+        stepname3=form.stepname3.data.strip(),
+        steptype1=form.steptype1.data.strip(),
+        steptype2=form.steptype2.data.strip(),
+        steptype3=form.steptype3.data.strip(),
+        amount1=form.amount1.data,
+        amount2=form.amount2.data,
+        amount3=form.amount3.data
+    )
 
-    cur = mysql.connection.cursor()
-    cur.execute('INSERT INTO results values(NULL, "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}", "{}")'.format(
-        flowname, stepname1, stepname2,  stepname3, steptype1, steptype2, steptype3, amount1, amount2, amount3))
-    mysql.connection.commit()
-    return redirect(url_for('flow_item', flow_id=cur.lastrowid))
+    db.session.add(flow)
+    db.session.commit()
+
+    return redirect(url_for('flow_item', flow_id=flow.id))
 
 
 @app.route("/flows/<int:flow_id>", methods=['GET'])
