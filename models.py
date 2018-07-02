@@ -2,6 +2,7 @@ from app import db
 
 
 class Flow(db.Model):
+    __tablename__ = 'results'
     id = db.Column(db.Integer, primary_key=True)
     flowname = db.Column(db.String(100), nullable=False)
     stepname1 = db.Column(db.String(100), nullable=False)
