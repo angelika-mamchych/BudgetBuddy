@@ -7,8 +7,9 @@
         <div>{{ error }}</div>
     {% endfor %}
 {% endif %}
+<br>
 <form method="post">
-    <fieldset>
+    <div id="steps">
         <div class="form-row">
             <div class="col-md-4 mb-3">
                 {{ form.flowname.label }}
@@ -23,10 +24,10 @@
         </div>
 
         {% for option in form.steptype1 %}
-            <div class="custom-control custom-radio custom-control-inline">
-                {{ option(class="custom-control-input") }}
-                {{ option.label(class="custom-control-label") }}
-            </div>
+        <div class="custom-control custom-radio custom-control-inline">
+            {{ option(class="custom-control-input") }}
+            {{ option.label(class="custom-control-label") }}
+        </div>
         {% endfor %}
 
         <br>
@@ -36,46 +37,119 @@
                 {{ form.amount1(class="form-control", required=true) }}
             </div>
         </div>
-    </fieldset>
-    <div class="form-row">
-      <div class="col-md-3 mb-3">
-          {{ form.stepname2.label }}
-          {{ form.stepname2(class="form-control", required=true) }}
-      </div>
     </div>
-    {% for option in form.steptype2 %}
-        <div class="custom-control custom-radio custom-control-inline">
-            {{ option(class="custom-control-input") }}
-            {{ option.label(class="custom-control-label") }}
-        </div>
-    {% endfor %}
-    <br>
-    <div class="form-row">
-        <div class="col-md-3 mb-3">
-            {{ form.amount2.label }}
-            {{ form.amount2(class="form-control", required=true) }}
-        </div>
-    </div>
-    <div class="form-row">
-      <div class="col-md-3 mb-3">
-          {{ form.stepname3.label }}
-          {{ form.stepname3(class="form-control", required=true) }}
-      </div>
-    </div>
-    {% for option in form.steptype3 %}
-        <div class="custom-control custom-radio custom-control-inline">
-            {{ option(class="custom-control-input") }}
-            {{ option.label(class="custom-control-label") }}
-        </div>
-    {% endfor %}
-    <br>
-    <div class="form-row">
-        <div class="col-md-3 mb-3">
-            {{ form.amount3.label }}
-            {{ form.amount3(class="form-control", required=true) }}
-        </div>
-    </div>
-
+    <button class="btn btn-primary" onclick="return onAddStep()">+</button><br><br>
     <button class="btn btn-success" type="submit">{{ buttontext }}</button>
 </form>
+<script>
+    let step = 2;
+    function onAddStep() {
+        if (step > 9) {
+            return false;
+        }
+
+        const stepsBlock = document.getElementById('steps');
+        const formRow = document.createElement('div');
+        formRow.className = 'form-row';
+        const col = document.createElement('div');
+        col.className = "col-md-4 mb-3";
+        const label = document.createElement('label');
+        const labelText = document.createTextNode(`Flow Name ${step}`);
+        const formControl = document.createElement('input');
+        formControl.className = 'form-control';
+        formControl.id = 'flowname';
+        formControl.name = 'flowname';
+        formControl.type = 'text';
+        formControl.required = true;
+        formControl.value = '';
+
+        stepsBlock.appendChild(formRow);
+        formRow.appendChild(col);
+        col.appendChild(label);
+        label.appendChild(labelText);
+        col.appendChild(formControl);
+
+
+        const formRowStepname = document.createElement('div');
+        formRowStepname.className = 'form-row';
+        const colStepname = document.createElement('div');
+        colStepname.className = "col-md-3 mb-3";
+        const labelStepname = document.createElement('label');
+        const labelStepnameText = document.createTextNode(`Step Name ${step}`);
+        const formControlStepname = document.createElement('input');
+        formControlStepname.className = 'form-control';
+        formControlStepname.id = 'stepname1';
+        formControlStepname.name = 'stepname1';
+        formControlStepname.type = 'text';
+        formControlStepname.required = true;
+        formControlStepname.value = '';
+        
+        stepsBlock.appendChild(formRowStepname);
+        formRowStepname.appendChild(colStepname);
+        colStepname.appendChild(labelStepname);
+        labelStepname.appendChild(labelStepnameText);
+        colStepname.appendChild(formControlStepname);
+
+        const checkboxFixed = document.createElement('div');
+        checkboxFixed.className = "custom-control custom-radio custom-control-inline";
+        const customControlFixed = document.createElement('input');
+        customControlFixed.className = 'custom-control-input';
+        customControlFixed.id = `steptype-${step}-0`;
+        customControlFixed.name = `steptype-${step}`;
+        customControlFixed.type = 'radio';
+        customControlFixed.value = 'fixed';
+        customControlFixed.checked = true;
+        const labelFixed = document.createElement('label');
+        labelFixed.className = "custom-control-label";
+        labelFixed.htmlFor = `steptype-${step}-0`;/*"steptype2-0";*/
+        const labelFixedText = document.createTextNode('Fixed');
+
+        stepsBlock.appendChild(checkboxFixed);
+        checkboxFixed.appendChild(customControlFixed);
+        checkboxFixed.appendChild(labelFixed);
+        labelFixed.appendChild(labelFixedText);
+
+        const checkboxPercent = document.createElement('div');
+        checkboxPercent.className = "custom-control custom-radio custom-control-inline";
+        const customControlPercent = document.createElement('input');
+        customControlPercent.className = 'custom-control-input';
+        customControlPercent.id = `steptype-${step}-1`;
+        customControlPercent.name = `steptype-${step}`;
+        customControlPercent.type = 'radio';
+        customControlPercent.value = 'percent';
+        const labelPercent = document.createElement('label');
+        labelPercent.className = "custom-control-label";
+        labelPercent.htmlFor = `steptype-${step}-1`;/*"steptype2-1"*/
+        const labelPercentText = document.createTextNode('Percent');
+
+        stepsBlock.appendChild(checkboxPercent);
+        checkboxPercent.appendChild(customControlPercent);
+        checkboxPercent.appendChild(labelPercent);
+        labelPercent.appendChild(labelPercentText);
+
+        const formRowAmount = document.createElement('div');
+        formRowAmount.className = 'form-row';
+        const colAmount = document.createElement('div');
+        colAmount.className = "col-md-3 mb-3";
+        const labelAmount = document.createElement('label');
+        const labelAmountText = document.createTextNode(`Amount ${step}`);
+        const formControlAmount = document.createElement('input');
+        formControlAmount.className = 'form-control';
+        formControlAmount.id = 'amount1';
+        formControlAmount.name = 'amount1';
+        formControlAmount.type = 'text';
+        formControlAmount.required = true;
+        formControlAmount.value = '';
+
+        stepsBlock.appendChild(formRowAmount);
+        formRowAmount.appendChild(colAmount);
+        colAmount.appendChild(labelAmount);
+        labelAmount.appendChild(labelAmountText);
+        colAmount.appendChild(formControlAmount);
+        step++;
+
+        return false;
+    }
+</script>
 {% endblock %}
+
