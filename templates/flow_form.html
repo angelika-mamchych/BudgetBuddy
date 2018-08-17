@@ -7,52 +7,27 @@
         <div>{{ error }}</div>
     {% endfor %}
 {% endif %}
+
 <br>
 <div id="root"></div>
-<form method="post">
-    <div id="steps">
-        <div class="form-row">
-            <div class="col-md-4 mb-3">
-                {{ form.flowname.label }}
-                {{ form.flowname(class="form-control", required=true) }}
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="col-md-3 mb-3">
-                {{ form.stepname1.label }}
-                {{ form.stepname1(class="form-control", required=true) }}
-            </div>
-        </div>
-
-        {% for option in form.steptype1 %}
-        <div class="custom-control custom-radio custom-control-inline">
-            {{ option(class="custom-control-input") }}
-            {{ option.label(class="custom-control-label") }}
-        </div>
-        {% endfor %}
-
-        <br>
-        <div class="form-row">
-            <div class="col-md-3 mb-3">
-                {{ form.amount1.label }}
-                {{ form.amount1(class="form-control", required=true) }}
-            </div>
-        </div>
-    </div>
-    <button class="btn btn-primary" onclick="return onAddStep()">+</button><br><br>
-    <button class="btn btn-success" type="submit">{{ buttontext }}</button>
-</form>
 <script type="text/babel">
-  // 5 -> [0,1,2,3,4]
-  // 2 -> [0,1]
-  // Make Real Step Component
-  // don't allow more than 9 steps
-  // get rid of old js
   function range(n) {
     return Array.from({length: n}, (x, i) => i);
   }
 
-  class Steps extends React.Component {
+  class Step extends React.Component {
+    render() {
+      const style = {border: "1px dotted blue", padding: "5px", marginBottom: "5px", borderRadius: "5px"};
+      const step = this.props.number;
+      return <div style={style}>
+        <StepName number={step} />
+        <StepType number={step} />
+        <Amount number={step} />
+      </div>
+    }
+  }
+
+  class Flow extends React.Component {
     constructor(props) {
       super(props);
       this.state = {numberOfSteps: 0};
@@ -65,135 +40,62 @@
 
     render() {
       return <div>
-        <Step />
-        {range(this.state.numberOfSteps).map(number => <Step key={number} number={number + 2}/>)}
-        <button className="btn btn-primary" onClick={this.addStep}>+</button>
+        <FormRow>
+          <label htmlFor="flowname">Flow Name</label>
+          <input className="form-control" id={`flowname`} name="flowname" required type="text" value=""/>
+        </FormRow>
+        <Step/>
+        {range(this.state.numberOfSteps).map(number => <Step key={number} number={number + 1}/>)}
+        {this.state.numberOfSteps < 9 && <button className="btn btn-primary" onClick={this.addStep}>+</button>}
       </div>;
     }
   }
 
-  class Step extends React.Component {
-    render() {
-      const step = this.props.number;
-      return <h1>I am step {step}</h1>;
-    }
+  function FormRow(props) {
+    return <div className="form-row">
+      <div className="col-md-4 mb-3">
+        {props.children}
+      </div>
+    </div>
+  }
+
+
+  function StepName(props) {
+    const step = props.number;
+    return <FormRow>
+        <label htmlFor={`stepname${step}`}>Step Name {step}</label>
+        <input className="form-control" id={`stepname${step}`} name="stepname1" required="" type="text" value="" />
+    </FormRow>;
+  }
+
+  function StepType(props) {
+    const step = props.number;
+    return <div>
+      <div className="custom-control custom-radio custom-control-inline">
+        <input className="custom-control-input" id={`steptype-0${step}`} name="steptype1" type="radio" value="fixed"/>
+        <label className="custom-control-label" htmlFor={`steptype-0${step}`}>Fixed</label>
+      </div>
+      <div className="custom-control custom-radio custom-control-inline">
+        <input className="custom-control-input" id={`steptype-1${step}`} name="steptype1" type="radio" value="percent"/>
+        <label className="custom-control-label" htmlFor={`steptype-1${step}`}>Percent</label><br/><br/>
+      </div>
+    </div>
+  }
+
+  function Amount(props)  {
+    const step = props.number;
+    return <FormRow>
+      <label htmlFor={`amount${step}`}>Amount {step}</label>
+      <input className="form-control" id={`amount${step}`} name="amount1" required="" type="text" value=""/>
+    </FormRow>
   }
 
   ReactDOM.render(
-    <Steps/>,
+    <Flow/>,
     document.getElementById('root')
   );
 
 </script>
-<script>
-    let step = 2;
-    function onAddStep() {
-        if (step > 9) {
-            return false;
-        }
 
-        const stepsBlock = document.getElementById('steps');
-        const formRow = document.createElement('div');
-        formRow.className = 'form-row';
-        const col = document.createElement('div');
-        col.className = "col-md-4 mb-3";
-        const label = document.createElement('label');
-        const labelText = document.createTextNode(`Flow Name ${step}`);
-        const formControl = document.createElement('input');
-        formControl.className = 'form-control';
-        formControl.id = 'flowname';
-        formControl.name = 'flowname';
-        formControl.type = 'text';
-        formControl.required = true;
-        formControl.value = '';
-
-        stepsBlock.appendChild(formRow);
-        formRow.appendChild(col);
-        col.appendChild(label);
-        label.appendChild(labelText);
-        col.appendChild(formControl);
-
-
-        const formRowStepname = document.createElement('div');
-        formRowStepname.className = 'form-row';
-        const colStepname = document.createElement('div');
-        colStepname.className = "col-md-3 mb-3";
-        const labelStepname = document.createElement('label');
-        const labelStepnameText = document.createTextNode(`Step Name ${step}`);
-        const formControlStepname = document.createElement('input');
-        formControlStepname.className = 'form-control';
-        formControlStepname.id = 'stepname1';
-        formControlStepname.name = 'stepname1';
-        formControlStepname.type = 'text';
-        formControlStepname.required = true;
-        formControlStepname.value = '';
-        
-        stepsBlock.appendChild(formRowStepname);
-        formRowStepname.appendChild(colStepname);
-        colStepname.appendChild(labelStepname);
-        labelStepname.appendChild(labelStepnameText);
-        colStepname.appendChild(formControlStepname);
-
-        const checkboxFixed = document.createElement('div');
-        checkboxFixed.className = "custom-control custom-radio custom-control-inline";
-        const customControlFixed = document.createElement('input');
-        customControlFixed.className = 'custom-control-input';
-        customControlFixed.id = `steptype-${step}-0`;
-        customControlFixed.name = `steptype-${step}`;
-        customControlFixed.type = 'radio';
-        customControlFixed.value = 'fixed';
-        customControlFixed.checked = true;
-        const labelFixed = document.createElement('label');
-        labelFixed.className = "custom-control-label";
-        labelFixed.htmlFor = `steptype-${step}-0`;/*"steptype2-0";*/
-        const labelFixedText = document.createTextNode('Fixed');
-
-        stepsBlock.appendChild(checkboxFixed);
-        checkboxFixed.appendChild(customControlFixed);
-        checkboxFixed.appendChild(labelFixed);
-        labelFixed.appendChild(labelFixedText);
-
-        const checkboxPercent = document.createElement('div');
-        checkboxPercent.className = "custom-control custom-radio custom-control-inline";
-        const customControlPercent = document.createElement('input');
-        customControlPercent.className = 'custom-control-input';
-        customControlPercent.id = `steptype-${step}-1`;
-        customControlPercent.name = `steptype-${step}`;
-        customControlPercent.type = 'radio';
-        customControlPercent.value = 'percent';
-        const labelPercent = document.createElement('label');
-        labelPercent.className = "custom-control-label";
-        labelPercent.htmlFor = `steptype-${step}-1`;/*"steptype2-1"*/
-        const labelPercentText = document.createTextNode('Percent');
-
-        stepsBlock.appendChild(checkboxPercent);
-        checkboxPercent.appendChild(customControlPercent);
-        checkboxPercent.appendChild(labelPercent);
-        labelPercent.appendChild(labelPercentText);
-
-        const formRowAmount = document.createElement('div');
-        formRowAmount.className = 'form-row';
-        const colAmount = document.createElement('div');
-        colAmount.className = "col-md-3 mb-3";
-        const labelAmount = document.createElement('label');
-        const labelAmountText = document.createTextNode(`Amount ${step}`);
-        const formControlAmount = document.createElement('input');
-        formControlAmount.className = 'form-control';
-        formControlAmount.id = 'amount1';
-        formControlAmount.name = 'amount1';
-        formControlAmount.type = 'text';
-        formControlAmount.required = true;
-        formControlAmount.value = '';
-
-        stepsBlock.appendChild(formRowAmount);
-        formRowAmount.appendChild(colAmount);
-        colAmount.appendChild(labelAmount);
-        labelAmount.appendChild(labelAmountText);
-        colAmount.appendChild(formControlAmount);
-        step++;
-
-        return false;
-    }
-</script>
 {% endblock %}
 
