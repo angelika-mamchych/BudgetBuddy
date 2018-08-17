@@ -8,6 +8,7 @@
     {% endfor %}
 {% endif %}
 <br>
+<div id="root"></div>
 <form method="post">
     <div id="steps">
         <div class="form-row">
@@ -41,6 +42,49 @@
     <button class="btn btn-primary" onclick="return onAddStep()">+</button><br><br>
     <button class="btn btn-success" type="submit">{{ buttontext }}</button>
 </form>
+<script type="text/babel">
+  // 5 -> [0,1,2,3,4]
+  // 2 -> [0,1]
+  // Make Real Step Component
+  // don't allow more than 9 steps
+  // get rid of old js
+  function range(n) {
+    return Array.from({length: n}, (x, i) => i);
+  }
+
+  class Steps extends React.Component {
+    constructor(props) {
+      super(props);
+      this.state = {numberOfSteps: 0};
+      this.addStep = this.addStep.bind(this);
+    }
+
+    addStep() {
+      this.setState({numberOfSteps: this.state.numberOfSteps + 1})
+    }
+
+    render() {
+      return <div>
+        <Step />
+        {range(this.state.numberOfSteps).map(number => <Step key={number} number={number + 2}/>)}
+        <button className="btn btn-primary" onClick={this.addStep}>+</button>
+      </div>;
+    }
+  }
+
+  class Step extends React.Component {
+    render() {
+      const step = this.props.number;
+      return <h1>I am step {step}</h1>;
+    }
+  }
+
+  ReactDOM.render(
+    <Steps/>,
+    document.getElementById('root')
+  );
+
+</script>
 <script>
     let step = 2;
     function onAddStep() {
