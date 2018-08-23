@@ -30,23 +30,28 @@ def flow_form():
 
 @app.route("/new_flow", methods=['POST'])
 def flow_create():
-    form = FlowForm(request.form)
+    # form = FlowForm(request.form)
+    #
+    # if not form.validate():
+    #     return render_template("flow_form.html", form=form, buttontext='Create Flow')
+    #
+    # flow = m.Flow(
+    #     flowname=form.flowname.data.strip(),
+    #     stepname1=form.stepname1.data.strip(),
+    #     stepname2=form.stepname2.data.strip(),
+    #     stepname3=form.stepname3.data.strip(),
+    #     steptype1=form.steptype1.data.strip(),
+    #     steptype2=form.steptype2.data.strip(),
+    #     steptype3=form.steptype3.data.strip(),
+    #     amount1=form.amount1.data,
+    #     amount2=form.amount2.data,
+    #     amount3=form.amount3.data
+    # )
+    flow_json = request.get_json()
 
-    if not form.validate():
-        return render_template("flow_form.html", form=form, buttontext='Create Flow')
-
-    flow = m.Flow(
-        flowname=form.flowname.data.strip(),
-        stepname1=form.stepname1.data.strip(),
-        stepname2=form.stepname2.data.strip(),
-        stepname3=form.stepname3.data.strip(),
-        steptype1=form.steptype1.data.strip(),
-        steptype2=form.steptype2.data.strip(),
-        steptype3=form.steptype3.data.strip(),
-        amount1=form.amount1.data,
-        amount2=form.amount2.data,
-        amount3=form.amount3.data
-    )
+    flow = m.Flow(name=flow_json['name'])
+    for step in flow_json['steps']:
+        flow.steps.append(m.Step(**step))
 
     db.session.add(flow)
     db.session.commit()

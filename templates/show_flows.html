@@ -5,7 +5,7 @@
 <ul>
     {% for flow in flows %}
         <li>
-            <a href="/flows/{{ flow.id }}">{{ flow.flowname }}</a>
+            <a href="/flows/{{ flow.id }}">{{ flow.name }}</a>
             <input type="checkbox" class="form-check-input" name="ids" value="{{ flow.id }}">
         </li>
     {% endfor %}

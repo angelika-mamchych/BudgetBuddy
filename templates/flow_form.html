@@ -49,6 +49,16 @@
         steps: this.state.steps.concat({...this.defaultStep}),
       })
     }
+    saveFlow = () => {
+      fetch('/new_flow', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        mode: 'same-origin',
+        body: JSON.stringify(this.state)
+      }).then(console.log)
+    };
 
     changeName = (event) => {
       this.setState({name: event.target.value});
@@ -107,6 +117,9 @@
           />
         ))}
         {this.state.numberOfSteps < 9 && <button className="btn btn-primary" onClick={this.addStep}>+</button>}
+        <br/><br/>
+        <button className="btn btn-primary" onClick={this.saveFlow}>Save</button>
+
       </div>;
     }
   }
