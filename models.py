@@ -10,6 +10,13 @@ class Flow(db.Model):
     def __repr__(self):
         return '<Flow {}>'.format(self.name)
 
+    def as_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'steps': [step.as_dict() for step in self.steps],
+        }
+
 
 class Step(db.Model):
     __tablename__ = 'step'
@@ -21,3 +28,6 @@ class Step(db.Model):
 
     def __repr__(self):
         return '<Step {}>'.format(self.name)
+
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}

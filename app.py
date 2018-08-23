@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from flask import Flask, request, render_template, redirect, url_for
+from flask import Flask, request, render_template, redirect, url_for, jsonify
 from forms import FlowForm
 from flask_sqlalchemy import SQLAlchemy
 import models as m
@@ -52,11 +52,13 @@ def flow_create():
     flow = m.Flow(name=flow_json['name'])
     for step in flow_json['steps']:
         flow.steps.append(m.Step(**step))
+        # flow.steps.append(m.Step(name=step['name'], type=step['type'], amount=step['amount']))
 
     db.session.add(flow)
     db.session.commit()
 
-    return redirect(url_for('flow_item', flow_id=flow.id))
+    return jsonify(flow.as_dict())
+    # return redirect(url_for('flow_item', flow_id=flow.id))
 
 
 @app.route("/flows/<int:flow_id>", methods=['GET'])
