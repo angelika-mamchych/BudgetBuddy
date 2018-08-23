@@ -3,9 +3,9 @@
 {% block body %}
 
 {% if form.errors %}
-    {% for error in form.errors %}
-        <div>{{ error }}</div>
-    {% endfor %}
+{% for error in form.errors %}
+<div>{{ error }}</div>
+{% endfor %}
 {% endif %}
 
 <br>
@@ -18,34 +18,94 @@
   class Step extends React.Component {
     render() {
       const style = {border: "1px dotted blue", padding: "5px", marginBottom: "5px", borderRadius: "5px"};
-      const step = this.props.number;
+      const step = this.props.number
       return <div style={style}>
-        <StepName number={step} />
-        <StepType number={step} />
-        <Amount number={step} />
+        <StepName number={step} name={this.props.name} onChangeName={this.props.onChangeName}/>
+        <StepType number={step} type={this.props.type} onChangeType={this.props.onChangeType}/>
+        <Amount number={step} amount={this.props.amount} onChangeAmount={this.props.onChangeAmount}/>
       </div>
     }
   }
 
   class Flow extends React.Component {
+    defaultStep = {
+      name: '',
+      type: 'fixed',
+      amount: '',
+    };
     constructor(props) {
       super(props);
-      this.state = {numberOfSteps: 0};
+      this.state = {
+        numberOfSteps: 0,
+        name: '',
+        steps: [{...this.defaultStep}],
+      };
       this.addStep = this.addStep.bind(this);
     }
 
     addStep() {
-      this.setState({numberOfSteps: this.state.numberOfSteps + 1})
+      this.setState({
+        numberOfSteps: this.state.numberOfSteps + 1,
+        steps: this.state.steps.concat({...this.defaultStep}),
+      })
     }
+
+    changeName = (event) => {
+      this.setState({name: event.target.value});
+    };
+
+    changeStepName = (event, index) => {
+      const stepsCopy = [...this.state.steps];
+      stepsCopy[index].name = event.target.value;
+
+      this.setState({steps: stepsCopy});
+    };
+
+    changeStepType = (event, index) => {
+      const stepsCopy = [...this.state.steps];
+      stepsCopy[index].type = event.target.value;
+
+      this.setState({steps: stepsCopy});
+    };
+
+    changeAmount = (event, index) => {
+      const stepsCopy = [...this.state.steps];
+      stepsCopy[index].amount = event.target.value;
+
+      this.setState({steps: stepsCopy});
+    };
+
 
     render() {
       return <div>
         <FormRow>
           <label htmlFor="flowname">Flow Name</label>
-          <input className="form-control" id={`flowname`} name="flowname" required type="text" value=""/>
+          <input onChange={this.changeName} className="form-control"
+                 id={`flowname`} name="flowname" required type="text" value={this.state.name}/>
         </FormRow>
-        <Step/>
-        {range(this.state.numberOfSteps).map(number => <Step key={number} number={number + 1}/>)}
+
+        <Step
+          name={this.state.steps[0].name}
+          onChangeName={(event) => this.changeStepName(event, 0)}
+          type={this.state.steps[0].type}
+          onChangeType={(event) => this.changeStepType(event, 0)}
+          amount={this.state.steps[0].amount}
+          onChangeAmount={(event) => this.changeAmount(event, 0)}
+
+        />
+
+        {range(this.state.numberOfSteps).map(number => (
+          <Step
+            name={this.state.steps[number + 1].name}
+            onChangeName={(event) => this.changeStepName(event, number + 1)}
+            type={this.state.steps[number + 1].type}
+            onChangeType={(event) => this.changeStepType(event, number + 1)}
+            amount={this.state.steps[number + 1].amount}
+            onChangeAmount={(event) => this.changeAmount(event, number + 1)}
+            key={number}
+            number={number + 1}
+          />
+        ))}
         {this.state.numberOfSteps < 9 && <button className="btn btn-primary" onClick={this.addStep}>+</button>}
       </div>;
     }
@@ -63,8 +123,9 @@
   function StepName(props) {
     const step = props.number;
     return <FormRow>
-        <label htmlFor={`stepname${step}`}>Step Name {step}</label>
-        <input className="form-control" id={`stepname${step}`} name="stepname1" required="" type="text" value="" />
+      <label htmlFor={`stepname${step}`}>Step Name {step} </label>
+      <input onChange={props.onChangeName} className="form-control" id={`stepname${step}`}
+             name="stepname1" required="" type="text" value={props.name}/>
     </FormRow>;
   }
 
@@ -72,26 +133,29 @@
     const step = props.number;
     return <div>
       <div className="custom-control custom-radio custom-control-inline">
-        <input className="custom-control-input" id={`steptype-0${step}`} name="steptype1" type="radio" value="fixed"/>
+        <input onChange={props.onChangeType} className="custom-control-input" checked={props.type === 'fixed'}
+               id={`steptype-0${step}`} name={`steptype-0${step}`} type="radio" value="fixed"/>
         <label className="custom-control-label" htmlFor={`steptype-0${step}`}>Fixed</label>
       </div>
       <div className="custom-control custom-radio custom-control-inline">
-        <input className="custom-control-input" id={`steptype-1${step}`} name="steptype1" type="radio" value="percent"/>
+        <input onChange={props.onChangeType} className="custom-control-input" checked={props.type === 'percent'}
+               id={`steptype-1${step}`} name={`steptype-1${step}`} type="radio" value="percent"/>
         <label className="custom-control-label" htmlFor={`steptype-1${step}`}>Percent</label><br/><br/>
       </div>
     </div>
   }
 
-  function Amount(props)  {
+  function Amount(props) {
     const step = props.number;
     return <FormRow>
       <label htmlFor={`amount${step}`}>Amount {step}</label>
-      <input className="form-control" id={`amount${step}`} name="amount1" required="" type="text" value=""/>
+      <input onChange={props.onChangeAmount} className="form-control" id={`amount${step}`}
+             name="amount1" required="" type="number" value={props.amount}/>
     </FormRow>
   }
 
   ReactDOM.render(
-    <Flow/>,
+    <Flow />,
     document.getElementById('root')
   );
 
