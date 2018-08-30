@@ -2,12 +2,6 @@
 
 {% block body %}
 
-{% if form.errors %}
-{% for error in form.errors %}
-<div>{{ error }}</div>
-{% endfor %}
-{% endif %}
-
 <br>
 <div id="root"></div>
 <script type="text/babel">
@@ -41,6 +35,20 @@
         steps: [{...this.defaultStep}],
       };
       this.addStep = this.addStep.bind(this);
+    }
+
+    componentDidMount() {
+      fetch(`/flows/${this.props.itemId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        mode: 'same-origin',
+      }).then(response => response.json()).then(flow => this.setState({
+          name: flow.name,
+          steps: flow.steps,
+          numberOfSteps: flow.steps.length - 1,
+        }));
     }
 
     addStep() {
@@ -169,9 +177,9 @@
              name="amount1" required="" type="number" value={props.amount}/>
     </FormRow>
   }
-
+  const itemId = Number({{flow.id}});
   ReactDOM.render(
-    <Flow />,
+    <Flow itemId={itemId} />,
     document.getElementById('root')
   );
 

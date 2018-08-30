@@ -23,9 +23,8 @@ def form():
 
 @app.route("/new_flow", methods=['GET'])
 def flow_form():
-    form = FlowForm()
 
-    return render_template("flow_form.html", form=form, buttontext='Create Flow')
+    return render_template("flow_form.html", flow=None, buttontext='Create Flow')
 
 
 @app.route("/new_flow", methods=['POST'])
@@ -45,7 +44,10 @@ def flow_create():
 @app.route("/flows/<int:flow_id>", methods=['GET'])
 def flow_item(flow_id):
     flow = m.Flow.query.filter_by(id=flow_id).first()
-    return render_template("flow_item.html", flow=flow)
+    if request.is_json:
+        return jsonify(flow.as_dict())
+    else:
+        return render_template("flow_item.html", flow=flow)
 
 
 @app.route("/flows/<int:flow_id>", methods=['POST'])
@@ -159,7 +161,7 @@ def edit_flow(flow_id):
 
         return redirect(url_for("flow_item", flow_id=flow_id))
     else:
-        return render_template('flow_form.html', form=form, buttontext="Edit Flow")
+        return render_template('flow_form.html', flow=flow, buttontext="Edit Flow")
 
 
 @app.route('/delete_flow/<int:flow_id>', methods=['POST'])
