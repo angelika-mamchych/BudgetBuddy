@@ -57,8 +57,10 @@
         },
         mode: 'same-origin',
         body: JSON.stringify(this.state)
-      }).then(console.log)
-      // window.location = `/flows/${res.json.id}`
+      }).then(response => response.json()).then(flow => {
+        window.location = `/flows/${flow.id}`
+      });
+
     };
 
     changeName = (event) => {
