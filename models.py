@@ -2,18 +2,32 @@ from app import db
 
 
 class Flow(db.Model):
-    __tablename__ = 'results'
+    __tablename__ = 'flow'
     id = db.Column(db.Integer, primary_key=True)
-    flowname = db.Column(db.String(100), nullable=False)
-    stepname1 = db.Column(db.String(100), nullable=False)
-    stepname2 = db.Column(db.String(100), nullable=False)
-    stepname3 = db.Column(db.String(100), nullable=False)
-    steptype1 = db.Column(db.String(100), nullable=False)
-    steptype2 = db.Column(db.String(100), nullable=False)
-    steptype3 = db.Column(db.String(100), nullable=False)
-    amount1 = db.Column(db.Float, nullable=False)
-    amount2 = db.Column(db.Float, nullable=False)
-    amount3 = db.Column(db.Float, nullable=False)
+    name = db.Column(db.String(100), nullable=False)
+    steps = db.relationship('Step', backref='flow', lazy=True)
 
     def __repr__(self):
-        return '<Flow {}>'.format(self.flowname)
+        return '<Flow {}>'.format(self.name)
+
+    def as_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'steps': [step.as_dict() for step in self.steps],
+        }
+
+
+class Step(db.Model):
+    __tablename__ = 'step'
+    id = db.Column(db.Integer, primary_key=True)
+    flow_id = db.Column(db.Integer, db.ForeignKey('flow.id'), nullable=False)
+    name = db.Column(db.String(100), nullable=False)
+    type = db.Column(db.String(100), nullable=False)
+    amount = db.Column(db.Float, nullable=False)
+
+    def __repr__(self):
+        return '<Step {}>'.format(self.name)
+
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}

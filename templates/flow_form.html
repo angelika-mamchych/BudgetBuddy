@@ -2,80 +2,204 @@
 
 {% block body %}
 
-{% if form.errors %}
-    {% for error in form.errors %}
-        <div>{{ error }}</div>
-    {% endfor %}
-{% endif %}
-<form method="post">
-    <fieldset>
-        <div class="form-row">
-            <div class="col-md-4 mb-3">
-                {{ form.flowname.label }}
-                {{ form.flowname(class="form-control", required=true) }}
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="col-md-3 mb-3">
-                {{ form.stepname1.label }}
-                {{ form.stepname1(class="form-control", required=true) }}
-            </div>
-        </div>
+<br>
+<div id="root"></div>
+<script type="text/babel">
+  function range(n) {
+    return Array.from({length: n}, (x, i) => i);
+  }
 
-        {% for option in form.steptype1 %}
-            <div class="custom-control custom-radio custom-control-inline">
-                {{ option(class="custom-control-input") }}
-                {{ option.label(class="custom-control-label") }}
-            </div>
-        {% endfor %}
+  class Step extends React.Component {
+    render() {
+      const style = {border: "1px dotted blue", padding: "5px", marginBottom: "5px", borderRadius: "5px"};
+      const step = this.props.number
+      return <div style={style}>
+        <StepName number={step} name={this.props.name} onChangeName={this.props.onChangeName}/>
+        <StepType number={step} type={this.props.type} onChangeType={this.props.onChangeType}/>
+        <Amount number={step} amount={this.props.amount} onChangeAmount={this.props.onChangeAmount}/>
+      </div>
+    }
+  }
 
-        <br>
-        <div class="form-row">
-            <div class="col-md-3 mb-3">
-                {{ form.amount1.label }}
-                {{ form.amount1(class="form-control", required=true) }}
-            </div>
-        </div>
-    </fieldset>
-    <div class="form-row">
-      <div class="col-md-3 mb-3">
-          {{ form.stepname2.label }}
-          {{ form.stepname2(class="form-control", required=true) }}
+  class Flow extends React.Component {
+    defaultStep = {
+      name: '',
+      type: 'fixed',
+      amount: '',
+    };
+    constructor(props) {
+      super(props);
+      this.state = {
+        numberOfSteps: 0,
+        name: '',
+        steps: [{...this.defaultStep}],
+      };
+      this.addStep = this.addStep.bind(this);
+    }
+
+    componentDidMount() {
+      if (this.props.itemId) {
+        fetch(`/flows/${this.props.itemId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        mode: 'same-origin',
+      }).then(response => response.json()).then(flow => this.setState({
+          name: flow.name,
+          steps: flow.steps,
+          numberOfSteps: flow.steps.length - 1,
+        }));
+      }
+    }
+
+    addStep() {
+      this.setState({
+        numberOfSteps: this.state.numberOfSteps + 1,
+        steps: this.state.steps.concat({...this.defaultStep}),
+      })
+    }
+
+    saveFlow = () => {
+      if (this.props.itemId) {
+        fetch(`/edit_flow/${this.props.itemId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          mode: 'same-origin',
+          body: JSON.stringify(this.state)
+        }).then(response => response.json()).then(flow => {
+          window.location = `/flows/${flow.id}`
+        })
+      } else {
+        fetch(`/new_flow/${this.props.itemId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          mode: 'same-origin',
+          body: JSON.stringify(this.state)
+        }).then(response => response.json()).then(flow => {
+          window.location = `/flows/${this.props.itemId}`
+        })
+        }
+
+    };
+
+    changeName = (event) => {
+      this.setState({name: event.target.value});
+    };
+
+    changeStepName = (event, index) => {
+      const stepsCopy = [...this.state.steps];
+      stepsCopy[index].name = event.target.value;
+
+      this.setState({steps: stepsCopy});
+    };
+
+    changeStepType = (event, index) => {
+      const stepsCopy = [...this.state.steps];
+      stepsCopy[index].type = event.target.value;
+
+      this.setState({steps: stepsCopy});
+    };
+
+    changeAmount = (event, index) => {
+      const stepsCopy = [...this.state.steps];
+      stepsCopy[index].amount = event.target.value;
+
+      this.setState({steps: stepsCopy});
+    };
+
+
+    render() {
+      return <div>
+        <FormRow>
+          <label htmlFor="flowname">Flow Name</label>
+          <input onChange={this.changeName} className="form-control"
+                 id={`flowname`} name="flowname" required type="text" value={this.state.name}/>
+        </FormRow>
+
+        <Step
+          name={this.state.steps[0].name}
+          onChangeName={(event) => this.changeStepName(event, 0)}
+          type={this.state.steps[0].type}
+          onChangeType={(event) => this.changeStepType(event, 0)}
+          amount={this.state.steps[0].amount}
+          onChangeAmount={(event) => this.changeAmount(event, 0)}
+
+        />
+
+        {range(this.state.numberOfSteps).map(number => (
+          <Step
+            name={this.state.steps[number + 1].name}
+            onChangeName={(event) => this.changeStepName(event, number + 1)}
+            type={this.state.steps[number + 1].type}
+            onChangeType={(event) => this.changeStepType(event, number + 1)}
+            amount={this.state.steps[number + 1].amount}
+            onChangeAmount={(event) => this.changeAmount(event, number + 1)}
+            key={number}
+            number={number + 1}
+          />
+        ))}
+        {this.state.numberOfSteps < 9 && <button className="btn btn-primary" onClick={this.addStep}>+</button>}
+        <br/><br/>
+        <button className="btn btn-primary" onClick={this.saveFlow}>Save</button>
+
+      </div>;
+    }
+  }
+
+  function FormRow(props) {
+    return <div className="form-row">
+      <div className="col-md-4 mb-3">
+        {props.children}
       </div>
     </div>
-    {% for option in form.steptype2 %}
-        <div class="custom-control custom-radio custom-control-inline">
-            {{ option(class="custom-control-input") }}
-            {{ option.label(class="custom-control-label") }}
-        </div>
-    {% endfor %}
-    <br>
-    <div class="form-row">
-        <div class="col-md-3 mb-3">
-            {{ form.amount2.label }}
-            {{ form.amount2(class="form-control", required=true) }}
-        </div>
-    </div>
-    <div class="form-row">
-      <div class="col-md-3 mb-3">
-          {{ form.stepname3.label }}
-          {{ form.stepname3(class="form-control", required=true) }}
+  }
+
+
+  function StepName(props) {
+    const step = props.number;
+    return <FormRow>
+      <label htmlFor={`stepname${step}`}>Step Name {step} </label>
+      <input onChange={props.onChangeName} className="form-control" id={`stepname${step}`}
+             name="stepname1" required="" type="text" value={props.name}/>
+    </FormRow>;
+  }
+
+  function StepType(props) {
+    const step = props.number;
+    return <div>
+      <div className="custom-control custom-radio custom-control-inline">
+        <input onChange={props.onChangeType} className="custom-control-input" checked={props.type === 'fixed'}
+               id={`steptype-0${step}`} name={`steptype-0${step}`} type="radio" value="fixed"/>
+        <label className="custom-control-label" htmlFor={`steptype-0${step}`}>Fixed</label>
+      </div>
+      <div className="custom-control custom-radio custom-control-inline">
+        <input onChange={props.onChangeType} className="custom-control-input" checked={props.type === 'percent'}
+               id={`steptype-1${step}`} name={`steptype-1${step}`} type="radio" value="percent"/>
+        <label className="custom-control-label" htmlFor={`steptype-1${step}`}>Percent</label><br/><br/>
       </div>
     </div>
-    {% for option in form.steptype3 %}
-        <div class="custom-control custom-radio custom-control-inline">
-            {{ option(class="custom-control-input") }}
-            {{ option.label(class="custom-control-label") }}
-        </div>
-    {% endfor %}
-    <br>
-    <div class="form-row">
-        <div class="col-md-3 mb-3">
-            {{ form.amount3.label }}
-            {{ form.amount3(class="form-control", required=true) }}
-        </div>
-    </div>
+  }
 
-    <button class="btn btn-success" type="submit">{{ buttontext }}</button>
-</form>
+  function Amount(props) {
+    const step = props.number;
+    return <FormRow>
+      <label htmlFor={`amount${step}`}>Amount {step}</label>
+      <input onChange={props.onChangeAmount} className="form-control" id={`amount${step}`}
+             name="amount1" required="" type="number" value={props.amount}/>
+    </FormRow>
+  }
+  const itemId = Number({{flow.id}});
+  ReactDOM.render(
+    <Flow itemId={itemId} />,
+    document.getElementById('root')
+  );
+
+</script>
+
 {% endblock %}
+
