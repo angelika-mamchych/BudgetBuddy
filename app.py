@@ -59,7 +59,8 @@ def flow_item_result(flow_id):
     for step in flow.steps:
         if step.type == 'fixed':
             fee = step.amount
-            # all our fee equals step.amount in the end they all will be in
+            # all our fee equals step.amount
+            # in the end they all will be in
             # the list fee=[] and total_left=total_amount-fee[]
             fees.append(fee)
         else:
@@ -142,24 +143,26 @@ def flow_compare_result():
 
 @app.route('/edit_flow/<int:flow_id>', methods=['GET', 'POST'])
 def edit_flow(flow_id):
+    # take flow object from db
     flow = m.Flow.query.filter_by(id=flow_id).first()
-    form = FlowForm(request.form, flow)
 
-    if request.method == 'POST' and form.validate():
-        flow.flowname = form.flowname.data.strip()
-        flow.stepname1 = form.stepname1.data.strip()
-        flow.stepname2 = form.stepname2.data.strip()
-        flow.stepname3 = form.stepname3.data.strip()
-        flow.steptype1 = form.steptype1.data.strip()
-        flow.steptype2 = form.steptype2.data.strip()
-        flow.steptype3 = form.steptype3.data.strip()
-        flow.amount1 = form.amount1.data
-        flow.amount2 = form.amount2.data
-        flow.amount3 = form.amount3.data
-
+    if request.method == 'POST':
+        # take flow dic from json which came from react UI
+        flow_json = request.get_json()
+        flow.name = flow_json['name']
+        # at this moment only change name and add step works
+        for step in flow_json['steps']:
+            if not step.get('id'):
+                flow.steps.append(m.Step(**step))
+            else:
+                for db_step in flow.steps:
+                    if db_step.id == step['id']:
+                        db_step.name = step['name']
+                        db_step.type = step['type']
+                        db_step.amount = step['amount']
         db.session.commit()
 
-        return redirect(url_for("flow_item", flow_id=flow_id))
+        return jsonify(flow.as_dict())
     else:
         return render_template('flow_form.html', flow=flow, buttontext="Edit Flow")
 
@@ -168,6 +171,7 @@ def edit_flow(flow_id):
 def delete_flow(flow_id):
     m.Flow.query.filter_by(id=flow_id).delete()
     return redirect(url_for('show_flows'))
+
 
 if __name__ == "__main__":
     app.run()

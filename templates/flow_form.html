@@ -38,7 +38,8 @@
     }
 
     componentDidMount() {
-      fetch(`/flows/${this.props.itemId}`, {
+      if (this.props.itemId) {
+        fetch(`/flows/${this.props.itemId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
@@ -49,6 +50,7 @@
           steps: flow.steps,
           numberOfSteps: flow.steps.length - 1,
         }));
+      }
     }
 
     addStep() {
@@ -57,17 +59,31 @@
         steps: this.state.steps.concat({...this.defaultStep}),
       })
     }
+
     saveFlow = () => {
-      fetch('/new_flow', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        mode: 'same-origin',
-        body: JSON.stringify(this.state)
-      }).then(response => response.json()).then(flow => {
-        window.location = `/flows/${flow.id}`
-      });
+      if (this.props.itemId) {
+        fetch(`/edit_flow/${this.props.itemId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          mode: 'same-origin',
+          body: JSON.stringify(this.state)
+        }).then(response => response.json()).then(flow => {
+          window.location = `/flows/${flow.id}`
+        })
+      } else {
+        fetch(`/new_flow/${this.props.itemId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          mode: 'same-origin',
+          body: JSON.stringify(this.state)
+        }).then(response => response.json()).then(flow => {
+          window.location = `/flows/${this.props.itemId}`
+        })
+        }
 
     };
 
