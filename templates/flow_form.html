@@ -11,7 +11,7 @@
 
   class Step extends React.Component {
     render() {
-      const style = {border: "1px dotted blue", padding: "5px", marginBottom: "5px", borderRadius: "5px"};
+      const style = {border: "1px dotted blue", padding: "5px", marginBottom: "5px", marginRight: "15px", borderRadius: "5px"};
       const step = this.props.number
       return <div style={style}>
         <StepName number={step} name={this.props.name} onChangeName={this.props.onChangeName}/>
@@ -73,7 +73,7 @@
           window.location = `/flows/${flow.id}`
         })
       } else {
-        fetch(`/new_flow/${this.props.itemId}`, {
+        fetch(`/new_flow`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -81,7 +81,7 @@
           mode: 'same-origin',
           body: JSON.stringify(this.state)
         }).then(response => response.json()).then(flow => {
-          window.location = `/flows/${this.props.itemId}`
+          window.location = `/flows/${flow.id}`
         })
         }
 
