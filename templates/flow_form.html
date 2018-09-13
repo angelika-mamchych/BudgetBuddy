@@ -73,7 +73,7 @@
           window.location = `/flows/${flow.id}`
         })
       } else {
-        fetch(`/new_flow/${this.props.itemId}`, {
+        fetch(`/new_flow`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -81,7 +81,7 @@
           mode: 'same-origin',
           body: JSON.stringify(this.state)
         }).then(response => response.json()).then(flow => {
-          window.location = `/flows/${this.props.itemId}`
+          window.location = `/flows/${flow.id}`
         })
         }
 

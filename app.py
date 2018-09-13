@@ -1,19 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from flask import Flask, request, render_template, redirect, url_for, jsonify
-from forms import FlowForm
-from flask_sqlalchemy import SQLAlchemy
+from flask import request, render_template, redirect, url_for, jsonify
 import models as m
-
-app = Flask(__name__)
-
-app.config.update(dict(
-    SQLALCHEMY_DATABASE_URI='mysql://root:mysql2Lika@localhost/budgetbuddy',
-    SQLALCHEMY_TRACK_MODIFICATIONS=False,
-    DEBUG=True,
-))
-
-db = SQLAlchemy(app)
+from settings import app, db
 
 
 @app.route("/")
@@ -56,23 +45,15 @@ def flow_item_result(flow_id):
     flow = m.Flow.query.filter_by(id=flow_id).first()
     total_amount = float(request.form['totalamount'].strip())
     fees = []
+    total_left = total_amount
     for step in flow.steps:
         if step.type == 'fixed':
             fee = step.amount
-            # all our fee equals step.amount
-            # in the end they all will be in
-            # the list fee=[] and total_left=total_amount-fee[]
             fees.append(fee)
         else:
-            # step.type == 'percent'
-            fee = step.amount / 100 * total_amount
+            fee = total_left * step.amount / 100
             fees.append(fee)
-
-    total_fee = 0
-    for fee in fees:
-        total_fee += fee
-    total_left = total_amount - total_fee
-    # total_left = total_amount - sum(fees)
+        total_left -= fee
 
     return render_template(
         "flow_item.html",
@@ -91,53 +72,38 @@ def show_flows():
 @app.route("/flows_compare", methods=['GET'])
 def flows_compare():
     ids = request.args.getlist('ids')
-    flows = m.Flow.query.filter(Flow.id.in_(ids)).all()
+    flows = m.Flow.query.filter(m.Flow.id.in_(ids)).all()
     return render_template("flows_compare.html", flows=flows)
 
 
 @app.route("/flows_compare", methods=['POST'])
 def flow_compare_result():
     ids = request.args.getlist('ids')
-    flows = m.Flow.query.filter(Flow.id.in_(ids)).all()
+    fees = {}
+    flows = m.Flow.query.filter(m.Flow.id.in_(ids)).all()
     total_amount = float(request.form['totalamount'].strip())
-    total_lefts = []
-    step_one_fees = []
-    step_two_fees = []
-    step_three_fees = []
+    total_left = total_amount
+    flow_fees = []
     for flow in flows:
-        fee = 0
-        if flow.steptype1.lower() == 'percent':
-            step1_fee = total_amount * flow.amount1 / 100
-            fee += step1_fee
-        else:
-            step1_fee = flow.amount1
-            fee += flow.amount1
+        for step in flow.steps:
+            if step.type == 'percent':
+                 step_fee = total_left * step.amount / 100
+                 flow_fees.append(step_fee)
+            else:
+                step_fee = step.amount
+                flow_fees.append(step_fee)
+            total_left -= step_fee
 
-        if flow.steptype2 == 'percent':
-            step2_fee = (total_amount - fee) * flow.amount2 / 100
-            fee += step2_fee
-        else:
-            step2_fee = flow.amount2
-            fee += flow.amount2
+            fees[flow.id] = {
+                'flow_fees': flow_fees,
+                'left': total_amount - step_fee
+            }
 
-        if flow.steptype3 == 'percent':
-            step3_fee = (total_amount - fee) * flow.amount3 / 100
-            fee += step3_fee
-        else:
-            step3_fee = flow.amount3
-            fee += flow.amount3
-        total_left = total_amount - fee
-        total_lefts.append(round(total_left, 2))
-        step_one_fees.append(round(step1_fee, 2))
-        step_two_fees.append(round(step2_fee, 2))
-        step_three_fees.append(round(step3_fee, 2))
+
     return render_template(
         "flows_compare.html",
         flows=flows,
-        step_one_fees=step_one_fees,
-        step_two_fees=step_two_fees,
-        step_three_fees=step_three_fees,
-        total_lefts=total_lefts
+        fees=fees
     )
 
 
@@ -160,6 +126,7 @@ def edit_flow(flow_id):
                         db_step.name = step['name']
                         db_step.type = step['type']
                         db_step.amount = step['amount']
+
         db.session.commit()
 
         return jsonify(flow.as_dict())
@@ -169,7 +136,8 @@ def edit_flow(flow_id):
 
 @app.route('/delete_flow/<int:flow_id>', methods=['POST'])
 def delete_flow(flow_id):
-    m.Flow.query.filter_by(id=flow_id).delete()
+    db.session.delete(m.Flow.query.get(flow_id))
+    db.session.commit()
     return redirect(url_for('show_flows'))
 
 
