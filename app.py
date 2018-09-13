@@ -49,10 +49,8 @@ def flow_item_result(flow_id):
     for step in flow.steps:
         if step.type == 'fixed':
             fee = step.amount
-            # all our fee equals step.amount in the end they all will be in the list fee=[] and total_left=total_amount-fee[]
             fees.append(fee)
         else:
-            # step.type == 'percent'
             fee = total_left * step.amount / 100
             fees.append(fee)
         total_left -= fee
@@ -81,16 +79,6 @@ def flows_compare():
 @app.route("/flows_compare", methods=['POST'])
 def flow_compare_result():
     ids = request.args.getlist('ids')
-    # dummy_fees = {
-    #     25: {
-    #         'flow_fees': [4, 5, 6],
-    #         'left': 55,
-    #     },
-    #     30: {
-    #         'flow_fees': [8, 9],
-    #         'left': 77,
-    #     }
-    #}
     fees = {}
     flows = m.Flow.query.filter(m.Flow.id.in_(ids)).all()
     total_amount = float(request.form['totalamount'].strip())
