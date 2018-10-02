@@ -2,7 +2,9 @@
 
 from flask import request, render_template, redirect, url_for, jsonify
 import models as m
+from forms import SignupForm
 from settings import app, db
+
 
 
 @app.route("/")
@@ -12,7 +14,6 @@ def form():
 
 @app.route("/new_flow", methods=['GET'])
 def flow_form():
-
     return render_template("flow_form.html", flow=None, buttontext='Create Flow')
 
 
@@ -99,13 +100,11 @@ def flow_compare_result():
                 'left': total_amount - step_fee
             }
 
-
     return render_template(
         "flows_compare.html",
         flows=flows,
         fees=fees
     )
-
 
 @app.route('/edit_flow/<int:flow_id>', methods=['GET', 'POST'])
 def edit_flow(flow_id):
@@ -141,6 +140,30 @@ def delete_flow(flow_id):
     return redirect(url_for('show_flows'))
 
 
+@app.route("/sign_in", methods=['GET'])
+def signin_form():
+    return render_template("signin.html")
+
+
+@app.route("/sign_up", methods=['GET', 'POST'])
+def signup_form():
+    form = SignupForm(request.form)
+    if request.method == 'POST' and form.validate():
+        user = m.User(
+            username=form.username.data.strip(),
+            email=form.email.data.strip(),
+            password=str(form.password.data.strip())
+        )
+
+        db.session.add(user)
+        db.session.commit()
+
+        return redirect(url_for('signin_form'))
+
+    return render_template('signup.html', form=form, buttontext='Sign Up')
+
+
 if __name__ == "__main__":
     app.run()
+
 
