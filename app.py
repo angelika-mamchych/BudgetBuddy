@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from flask import request, render_template, redirect, url_for, jsonify
+from flask import flash, request, render_template, redirect, url_for, jsonify, session
 import models as m
 from forms import SignupForm
 from settings import app, db
-
 
 
 @app.route("/")
@@ -106,6 +105,7 @@ def flow_compare_result():
         fees=fees
     )
 
+
 @app.route('/edit_flow/<int:flow_id>', methods=['GET', 'POST'])
 def edit_flow(flow_id):
     # take flow object from db
@@ -140,9 +140,30 @@ def delete_flow(flow_id):
     return redirect(url_for('show_flows'))
 
 
-@app.route("/sign_in", methods=['GET'])
+@app.route("/sign_in", methods=['GET', 'POST'])
 def signin_form():
+    if request.method == 'POST':
+        user = m.User.query.filter_by(email=request.form['email']).first()
+
+        if not user:
+            flash('Email was not found.', 'danger')
+            return render_template("signin.html")
+
+        if request.form['password'] == user.password:
+            session['email'] = request.form['email']
+            flash('Successfully logged in!', 'success')
+            return redirect(url_for('show_flows'))
+        else:
+            flash('Password is not correct!', 'danger')
+
     return render_template("signin.html")
+
+
+@app.route("/logout", methods=['GET', 'POST'])
+def logout():
+    session['email'] = None
+    flash('You were logged out.', 'success')
+    return redirect(url_for('signin_form'))
 
 
 @app.route("/sign_up", methods=['GET', 'POST'])

@@ -21,10 +21,21 @@
             </li>
         </ul>
           <ul class="navbar-nav d-lg">
+              {% if session.email %}
               <li class="nav-item">
-                  <a class="nav-link" href="/sign_in">Sign in</a></li>
+                  <a class="nav-link" href="/">{{ session.email }}</a>
+              </li>
               <li class="nav-item">
-                  <a class="nav-link" href="/sign_up">Sign up</a></li>
+                  <a class="nav-link" href="/logout">Log out</a>
+              </li>
+              {% else %}
+              <li class="nav-item">
+                  <a class="nav-link" href="/sign_in">Sign in</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link" href="/sign_up">Sign up</a>
+              </li>
+              {% endif %}
           </ul>
 
 
