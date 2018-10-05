@@ -21,9 +21,9 @@
             </li>
         </ul>
           <ul class="navbar-nav d-lg">
-              {% if session.email %}
+              {% if session.user %}
               <li class="nav-item">
-                  <a class="nav-link" href="/">{{ session.email }}</a>
+                  <a class="nav-link" href="/">{{ session.user.username }}</a>
               </li>
               <li class="nav-item">
                   <a class="nav-link" href="/logout">Log out</a>

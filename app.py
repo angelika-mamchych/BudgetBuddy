@@ -150,7 +150,7 @@ def signin_form():
             return render_template("signin.html")
 
         if request.form['password'] == user.password:
-            session['email'] = request.form['email']
+            session['user'] = user.as_dict()
             flash('Successfully logged in!', 'success')
             return redirect(url_for('show_flows'))
         else:
@@ -161,7 +161,7 @@ def signin_form():
 
 @app.route("/logout", methods=['GET', 'POST'])
 def logout():
-    session['email'] = None
+    session['user'] = None
     flash('You were logged out.', 'success')
     return redirect(url_for('signin_form'))
 
