@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block body %}
+{% from "includes/_formhelpers.html" import render_field %}
+
+<div class="text-center">
+    <form class="form-signin" method="POST" action="" style="width: 200px; margin: 0 auto">
+      <h1 class="h3 mb-5 font-weight-normal">Please sign up</h1>
+        <div class="form-group">
+            {{render_field(form.username, class_="form-control")}}
+        </div>
+        <div class="form-group">
+            {{render_field(form.email, class_="form-control")}}
+        </div>
+        <div class="form-group">
+            {{render_field(form.password, class_="form-control")}}
+        </div>
+        <p><input type="submit" class="btn btn-primary" value="Submit"></p>
+
+    </form>
+</div>
+
+{% endblock %}

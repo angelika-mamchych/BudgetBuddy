@@ -10,4 +10,6 @@ app.config.update(dict(
     SQLALCHEMY_ECHO=True,
 ))
 
+app.secret_key = b'_5#y2L"Fjhgjguh\xec]/'
+
 db = SQLAlchemy(app)
