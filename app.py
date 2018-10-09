@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from flask import flash, request, render_template, redirect, url_for, jsonify, session
+from flask import abort, flash, request, render_template, redirect, url_for, jsonify, session
 import models as m
 from forms import SignupForm
 from settings import app, db
@@ -19,7 +19,7 @@ def flow_form():
 @app.route("/new_flow", methods=['POST'])
 def flow_create():
     flow_json = request.get_json()
-    flow = m.Flow(name=flow_json['name'])
+    flow = m.Flow(name=flow_json['name'], user_id=user_id_or_none())
     for step in flow_json['steps']:
         flow.steps.append(m.Step(**step))
         # flow.steps.append(m.Step(name=step['name'], type=step['type'], amount=step['amount']))
@@ -32,7 +32,11 @@ def flow_create():
 
 @app.route("/flows/<int:flow_id>", methods=['GET'])
 def flow_item(flow_id):
-    flow = m.Flow.query.filter_by(id=flow_id).first()
+    flow = m.Flow.query.filter_by(id=flow_id, user_id=user_id_or_none()).first()
+
+    if not flow:
+        return abort(404)
+
     if request.is_json:
         return jsonify(flow.as_dict())
     else:
@@ -65,7 +69,7 @@ def flow_item_result(flow_id):
 
 @app.route("/flows")
 def show_flows():
-    flows = m.Flow.query.all()
+    flows = m.Flow.query.filter(m.Flow.user_id == user_id_or_none()).all()
     return render_template("show_flows.html", flows=flows)
 
 
@@ -182,6 +186,18 @@ def signup_form():
         return redirect(url_for('signin_form'))
 
     return render_template('signup.html', form=form, buttontext='Sign Up')
+
+
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template('page_not_found.html'), 404
+
+
+def user_id_or_none():
+    if session['user']:
+        return session['user']['id']
+
+    return None
 
 
 if __name__ == "__main__":
