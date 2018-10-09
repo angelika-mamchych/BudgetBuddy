@@ -53,7 +53,3 @@ class User(db.Model):
              'password': self.password
          }
 
-
-
-
-
