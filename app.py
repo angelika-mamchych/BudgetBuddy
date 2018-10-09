@@ -158,7 +158,7 @@ def signin_form():
             flash('Successfully logged in!', 'success')
             return redirect(url_for('show_flows'))
         else:
-            flash('Password is not correct!{}'.format(session['failed']), 'danger')
+            flash('Password is not correct!', 'danger')
 
     return render_template("signin.html")
 
