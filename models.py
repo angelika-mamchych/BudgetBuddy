@@ -6,6 +6,8 @@ class Flow(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     steps = db.relationship('Step', backref='flow', lazy=True, passive_deletes=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'),
+                          nullable=True)
 
     def __repr__(self):
         return '<Flow {}>'.format(self.name)
@@ -50,6 +52,8 @@ class User(db.Model):
              'email': self.email,
              'password': self.password
          }
+
+
 
 
 
