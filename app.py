@@ -86,9 +86,10 @@ def flow_compare_result():
     fees = {}
     flows = m.Flow.query.filter(m.Flow.id.in_(ids)).all()
     total_amount = float(request.form['totalamount'].strip())
-    total_left = total_amount
-    flow_fees = []
+
     for flow in flows:
+        total_left = total_amount
+        flow_fees = []
         for step in flow.steps:
             if step.type == 'percent':
                  step_fee = total_left * step.amount / 100
@@ -98,10 +99,10 @@ def flow_compare_result():
                 flow_fees.append(step_fee)
             total_left -= step_fee
 
-            fees[flow.id] = {
-                'flow_fees': flow_fees,
-                'left': total_amount - step_fee
-            }
+        fees[flow.id] = {
+            'flow_fees': flow_fees,
+            'left': total_left
+        }
 
     return render_template(
         "flows_compare.html",
