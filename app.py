@@ -195,9 +195,8 @@ def page_not_found(error):
 
 
 def user_id_or_none():
-    if session['user']:
+    if session.get('user', None):
         return session['user']['id']
-
     return None
 
 

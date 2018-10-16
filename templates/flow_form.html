@@ -201,7 +201,7 @@
     return <FormRow>
       <label htmlFor={`amount${step}`}>Amount {step}</label>
       <input onChange={props.onChangeAmount} className="form-control" id={`amount${step}`}
-             name="amount1" required="" type="number" value={props.amount}/>
+             name="amount1" required="" type="number" step="0.1" value={props.amount}/>
     </FormRow>
   }
   const itemId = Number({{flow.id}});
