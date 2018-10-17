@@ -4,7 +4,7 @@
 {% for flow in flows %}
     <div style="float: left; margin: 50px">
         <br>
-        <i>{{ flow.name }}</i>
+        <a href="/flows/{{ flow.id }}">{{ flow.name }}</a>
         <br/>
         {% for step in flow.steps %}
         <div>Stepname: {{ step.name }}</div>
