@@ -5,9 +5,9 @@ Program that allows you to calculate taxes and fees
 - Python 3
 - [SQLite](https://www.sqlite.org/download.html)
 - pip3
-- sudo apt install
+
 ```shell
-sudo apt install sqlite3 python3-pip
+sudo apt install sqlite3 pytho3 python3-pip
 ```
 
 ## 3 steps to launch the BudgetBuddy
