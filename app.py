@@ -92,8 +92,8 @@ def flow_compare_result():
         flow_fees = []
         for step in flow.steps:
             if step.type == 'percent':
-                 step_fee = total_left * step.amount / 100
-                 flow_fees.append(step_fee)
+                step_fee = total_left * step.amount / 100
+                flow_fees.append(step_fee)
             else:
                 step_fee = step.amount
                 flow_fees.append(step_fee)
@@ -194,6 +194,14 @@ def page_not_found(error):
     return render_template('page_not_found.html'), 404
 
 
+@app.route('/.well-known/acme-challenge/<string:filename>', methods=['GET'])
+def https_check(filename):
+    with open('.well-known/acme-challenge/{}'.format(filename), 'r') as f:
+        read_data = f.read()
+
+    return read_data
+
+
 def user_id_or_none():
     if session.get('user', None):
         return session['user']['id']
@@ -202,5 +210,3 @@ def user_id_or_none():
 
 if __name__ == "__main__":
     app.run()
-
-
