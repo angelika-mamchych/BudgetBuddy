@@ -202,6 +202,14 @@ def https_check(filename):
     return read_data
 
 
+@app.before_request
+def before_request():
+    if request.url.startswith('http://bb.oleksii.org'):
+        url = request.url.replace('http://', 'https://', 1)
+        code = 301
+        return redirect(url, code=code)
+
+
 def user_id_or_none():
     if session.get('user', None):
         return session['user']['id']
